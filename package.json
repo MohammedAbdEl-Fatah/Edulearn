@@ -1,0 +1,17 @@
+{
+  "name": "edulearn",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev:run":"concurrently \"npm run dev:ts\" \"npm run dev:node\"",
+    "dev:ts":"tsc --watch",
+    "dev:node":"node --watch dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
