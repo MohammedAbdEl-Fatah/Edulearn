@@ -2,6 +2,7 @@
   "name": "edulearn",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "dev:run":"concurrently \"npm run dev:ts\" \"npm run dev:node\"",
     "dev:ts":"tsc --watch",
