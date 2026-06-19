@@ -28,6 +28,7 @@
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noUnusedLocals": true,
+    "esModuleInterop": true,
     // "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
