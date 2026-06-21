@@ -2,8 +2,7 @@ import type { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-
-
+import { connectDatabase } from "./DB/connect.database";
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
@@ -12,8 +11,12 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
+const port = process.env.PORT || 3000;
+export const bootstrap = async (app: Express, express: any): Promise<void> => {
 
-export const bootstrap = (app: Express, express: any): void => {
+
+
+    await connectDatabase();
     app.use(express.json()); // for parsing application/json
     app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded when using form data
     // security headers, rate limiting, cors
@@ -24,7 +27,7 @@ export const bootstrap = (app: Express, express: any): void => {
     }),
         limiter,
         helmet());
-    app.listen(3000, () => {
-        console.log("Server running on port 3000");
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
     });
 };
