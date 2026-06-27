@@ -1,4 +1,4 @@
-import { Document, Model, QueryOptions, RootFilterQuery, ProjectionType, UpdateQuery, MongooseUpdateQueryOptions, MongooseBaseQueryOptions } from "mongoose";
+import { Document, Model, QueryOptions, FilterQuery, ProjectionType, UpdateQuery, MongooseUpdateQueryOptions, MongooseBaseQueryOptions } from "mongoose";
 
 export abstract class DatabaseRepository<T> {
     constructor(protected readonly model: Model<T>) { }
@@ -15,7 +15,7 @@ export abstract class DatabaseRepository<T> {
         projection,
         options
     }: {
-        filter: RootFilterQuery<T>,
+        filter: FilterQuery<T>,
         projection?: ProjectionType<T>,
         options?: QueryOptions<T>
     }): Promise<T | null> {
@@ -26,7 +26,7 @@ export abstract class DatabaseRepository<T> {
         projection,
         options
     }: {
-        filter: RootFilterQuery<T>,
+        filter: FilterQuery<T>,
         projection?: ProjectionType<T>,
         options?: QueryOptions<T>
     }): Promise<T[]> {
@@ -38,7 +38,7 @@ export abstract class DatabaseRepository<T> {
         projection,
         options
     }: {
-        filter: RootFilterQuery<T>,
+        filter: FilterQuery<T>,
         projection: UpdateQuery<T>,
         options?: MongooseUpdateQueryOptions<T>
     }): Promise<any> {
@@ -49,7 +49,7 @@ export abstract class DatabaseRepository<T> {
         projection,
         options
     }: {
-        filter: RootFilterQuery<T>,
+        filter: FilterQuery<T>,
         projection: UpdateQuery<T>,
         options?: MongooseUpdateQueryOptions<T>
     }): Promise<any> {
@@ -57,10 +57,10 @@ export abstract class DatabaseRepository<T> {
     }
 
     //delete
-    async deleteOne({ filter, options }: { filter: RootFilterQuery<T>, options?: MongooseBaseQueryOptions<T> }): Promise<any> {
+    async deleteOne({ filter, options }: { filter: FilterQuery<T>, options?: MongooseBaseQueryOptions<T> }): Promise<any> {
         return await this.model.deleteOne(filter, options);
     }
-    async deleteMany({ filter, options }: { filter: RootFilterQuery<T>, options?: MongooseBaseQueryOptions<T> }): Promise<any> {
+    async deleteMany({ filter, options }: { filter: FilterQuery<T>, options?: MongooseBaseQueryOptions<T> }): Promise<any> {
         return await this.model.deleteMany(filter, options);
     }
 }
