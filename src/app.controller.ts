@@ -3,6 +3,11 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { connectDatabase } from "./DB/connect.database";
+
+
+//import modules 
+import authController from "./modules/auth/auth.controller";
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
@@ -11,7 +16,7 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
-const port = process.env.PORT || 3000;
+const port: number = parseInt(process.env.PORT || "3000", 10);
 export const bootstrap = async (app: Express, express: any): Promise<void> => {
 
 
@@ -27,7 +32,12 @@ export const bootstrap = async (app: Express, express: any): Promise<void> => {
     }),
         limiter,
         helmet());
+
+
+
+    // All Modules
+    app.use("/api/v1/auth", authController);
     app.listen(port, () => {
-        console.log(`Server running on port ${port}`);
+        console.log(`Server running on port http://localhost:${port}`);
     });
 };
