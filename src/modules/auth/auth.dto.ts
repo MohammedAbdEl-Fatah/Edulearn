@@ -1,0 +1,20 @@
+export interface SignUpStudentDTO {
+    fristName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    confirmPassword:string;
+    dob:Date;
+    phoneNumber:string;
+}
+
+export interface SignUpTeacherDTO {
+    fristName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    subject: string;
+    dob:Date;
+    phoneNumber:string;
+}
+
