@@ -12,4 +12,5 @@ export interface IUser {
     otpExpires: Date;
     createdAt: Date;
     updatedAt: Date;
+    subjectCourse?: string[];
 }
