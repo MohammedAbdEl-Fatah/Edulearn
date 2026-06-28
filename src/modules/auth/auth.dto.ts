@@ -18,4 +18,8 @@ export interface SignUpTeacherDTO {
     dob:Date;
     phoneNumber:string;
 }
+export interface ConfirmOtpDTO{
+    email:string,
+    otp:string
+}
 
