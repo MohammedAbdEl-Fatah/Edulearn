@@ -1,9 +1,8 @@
 import nodemailer from "nodemailer";
 import { env } from "../../config/env.local";
 
-const userEmail: string = env.EMAIL_USER!;
-const passwordEmail: string = env.EMAIL_PASSWORD!;
-
+const userEmail: string = env.USER_EMAIL || "";
+const passwordEmail: string = env.USER_PASSWORD || "";
 const configEmail = {
     host: "smtp.gmail.com",
     port: 587,
@@ -16,7 +15,8 @@ const configEmail = {
 
 const transporter = nodemailer.createTransport(configEmail);
 
-const sendEmail = async ({ email, subject, text, html, attachments }: { email: string, subject: string, text: string, html?: string, attachments?: any[] }) => {
+const sendEmail = async ({ email, subject, text, html, attachments }:
+    { email: string, subject: string, text: string, html?: string, attachments?: any[] }) => {
     await transporter.sendMail({
         from: `Edulearn <${userEmail}>`,
         to: email,

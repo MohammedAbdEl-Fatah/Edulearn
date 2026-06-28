@@ -4,6 +4,6 @@ config();
 export const env = {
         mongoUri: process.env.MONGO_URI,
         SALT_ROUND: process.env.SALT_ROUND,
-        EMAIL_USER: process.env.EMAIL_USER,
-        EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+        USER_EMAIL: process.env.USER_EMAIL,
+        USER_PASSWORD: process.env.USER_PASSWORD,
 };

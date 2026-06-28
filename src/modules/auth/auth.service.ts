@@ -5,7 +5,8 @@ import { IUser } from "../../utils/interface";
 import { UserRepository } from "../../DB/user/user.repository";
 import AuthResponse from "./auth.response";
 
-
+import sendEmail from "../../utils/email";
+import verifyEmailTemplate from "../../utils/email/temp/verify.email";
 class AuthenticationService {
     constructor(private readonly authFactory: typeof AuthFactory, private readonly userRepository: UserRepository, private readonly authResponse: typeof AuthResponse) {
 
@@ -45,8 +46,14 @@ class AuthenticationService {
         console.log(user);
 
         const userResponse = this.authResponse.signUpStudentResponse(user);
-        //TODO send mailer
 
+        //todo gernetaed otp 
+        await sendEmail({
+            email: user.email,
+            subject: "Verify Email",
+            text: "Verify Email",
+            html: verifyEmailTemplate(`${user.firstName} ${user.lastName}`, "123456", 3)
+        });
 
         return res.status(201).json(userResponse);
     }

@@ -1,4 +1,4 @@
-const verifyEmailTemplate = (name: string, code: string): string => `
+const verifyEmailTemplate = (name: string, code: string, time: number): string => `
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,7 +41,7 @@ const verifyEmailTemplate = (name: string, code: string): string => `
 
 <div class="container">
 
-<h1>Hello ${name} 👋</h1>
+<h1>Hello, ${name} 👋</h1>
 
 <p>
 Thank you for registering.
@@ -56,7 +56,7 @@ ${code}
 </div>
 
 <p>
-This code expires in 10 minutes.
+This code expires in ${time} minutes.
 </p>
 
 </div>
