@@ -11,6 +11,8 @@ export const userSchema = new Schema<IUser>({
     isVerified: { type: Boolean, required: true, default: false },
     phone: { type: String, required: false, trim: true },
     dob: { type: Date, required: false },
+    otp: { type: String, required: false, trim: true },
+    otpExpires: { type: Date, required: false }
 }, {
     timestamps: true,
     versionKey: false,

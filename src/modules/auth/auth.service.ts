@@ -43,16 +43,16 @@ class AuthenticationService {
         const studentFactory: Omit<IUser, "id"> = await this.authFactory.signUpStudent(reqestBodyDTO);
         //saving to DB
         const user = await this.userRepository.create(studentFactory as IUser);
-        console.log(user);
 
         const userResponse = this.authResponse.signUpStudentResponse(user);
-
-        //todo gernetaed otp 
+        const remendOtpExpire = Math.ceil(
+            (user.otpExpires.getTime() - Date.now()) / (1000 * 60)
+        );
         await sendEmail({
             email: user.email,
             subject: "Verify Email",
             text: "Verify Email",
-            html: verifyEmailTemplate(`${user.firstName} ${user.lastName}`, "123456", 3)
+            html: verifyEmailTemplate(`${user.firstName} ${user.lastName}`, user.otp, remendOtpExpire)
         });
 
         return res.status(201).json(userResponse);

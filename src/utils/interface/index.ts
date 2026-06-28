@@ -8,6 +8,8 @@ export interface IUser {
     dob: Date;
     phone: string;
     isVerified: boolean;
+    otp: string;
+    otpExpires: Date;
     createdAt: Date;
     updatedAt: Date;
 }
