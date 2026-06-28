@@ -6,4 +6,5 @@ export const env = {
         SALT_ROUND: process.env.SALT_ROUND,
         USER_EMAIL: process.env.USER_EMAIL,
         USER_PASSWORD: process.env.USER_PASSWORD,
+        ENCRYPT_KEY:process.env.ENCRYPT_KEY
 };

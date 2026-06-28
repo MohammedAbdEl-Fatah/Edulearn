@@ -13,7 +13,8 @@ export interface SignUpTeacherDTO {
     lastName: string;
     email: string;
     password: string;
-    subject: string;
+    confirmPassword:string;
+    subjectCourse: string[];
     dob:Date;
     phoneNumber:string;
 }
