@@ -13,4 +13,8 @@ router.put("/confirm-email", (req: Request, res: Response) => {
 
     authService.confirmEmail(req, res);
 });
+router.post("/login", (req: Request, res: Response) => {
+
+    authService.login(req, res);
+});
 export default router;
