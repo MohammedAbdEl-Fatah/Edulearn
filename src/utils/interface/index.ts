@@ -14,3 +14,12 @@ export interface IUser {
     updatedAt: Date;
     subjectCourse?: string[];
 }
+export interface IToken {
+    readonly id: string;
+    userId: string;
+    roleUser: string;
+    token: string;
+    expires: Date;
+    createdAt: Date;
+    updatedAt: Date;
+}
