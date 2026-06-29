@@ -9,4 +9,8 @@ router.post("/sign-up/teacher", (req: Request, res: Response) => {
 
     authService.signUpTeacher(req, res);
 });
+router.put("/confirm-email", (req: Request, res: Response) => {
+
+    authService.confirmEmail(req, res);
+});
 export default router;

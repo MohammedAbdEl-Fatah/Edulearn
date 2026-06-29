@@ -3,7 +3,6 @@ import { IUser } from "../../utils/interface";
 
 class AuthResponse {
     public signUpStudentResponse(user: IUser) {
-        console.log("User:", user);
         return {
             success: true,
             message: "Successfully Registered, Please verify your email",
@@ -39,6 +38,13 @@ class AuthResponse {
                 subjectCourse: user.subjectCourse,
                 createdAt: user.createdAt,
             }
+        }
+    }
+    
+    public confirmOtpResponse() {
+        return {
+            success: true,
+            message: "Email verified successfully"
         }
     }
 }
