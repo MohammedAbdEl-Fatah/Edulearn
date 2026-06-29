@@ -1,7 +1,7 @@
-import jwt, { SignOptions } from "jsonwebtoken";
-import { RoleUSER, TokenType } from "../enum";
-import { env } from "../../config/env.local";
+import jwt from "jsonwebtoken";
 import ms from "ms";
+import { env } from "../../config/env.local";
+import { RoleUSER, TokenType } from "../enum";
 
 // generate otp
 export const generateOtp = () => {
