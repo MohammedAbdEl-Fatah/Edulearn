@@ -23,3 +23,7 @@ export interface ConfirmOtpDTO{
     otp:string
 }
 
+export interface LoginDTO{
+    email:string,
+    password:string
+}
