@@ -1,9 +1,9 @@
-import type { SignUpStudentDTO, SignUpTeacherDTO } from "./auth.dto";
-import type { IUser } from "../../utils/interface";
-import { RoleUSER } from "../../utils/enum";
-import { hashValue } from "../../utils/hash";
-import { generateOtp, generateOtpExpire } from "../../utils/generated";
 import { encryptValue } from "../../utils/encrypt";
+import { RoleUSER, TokenType } from "../../utils/enum";
+import { generatedToken, generateOtp, generateOtpExpire } from "../../utils/generated";
+import { hashValue } from "../../utils/hash";
+import type { IUser } from "../../utils/interface";
+import type { SignUpStudentDTO, SignUpTeacherDTO } from "./auth.dto";
 class AuthFactory {
 
     public async signUpStudent(
@@ -58,6 +58,24 @@ class AuthFactory {
         };
     }
 
+    public generateToken({ userId, role, email }:
+        { userId: string; role: RoleUSER; email: string })
+        : { accessToken: string; refreshToken: string } {
+        return {
+            accessToken: generatedToken({
+                data: { userId, role, email },
+                roleSecret: role,
+                time: "1h",
+                tokenType: TokenType.ACCESS
+            }),
+            refreshToken: generatedToken({
+                data: { userId, role, email },
+                roleSecret: role,
+                time: "7d",
+                tokenType: TokenType.REFRESH
+            })
+        };
+    }
 }
 
 export default new AuthFactory();

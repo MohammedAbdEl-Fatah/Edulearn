@@ -47,5 +47,15 @@ class AuthResponse {
             message: "Email verified successfully"
         }
     }
+    public loginResponse(token: { accessToken: string; refreshToken: string }) {
+        return {
+            success: true,
+            message: "Login successful",
+            data: {
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken
+            }
+        }
+    }
 }
 export default new AuthResponse();

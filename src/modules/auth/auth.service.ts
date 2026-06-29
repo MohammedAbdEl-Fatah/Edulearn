@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ConfirmOtpDTO, SignUpStudentDTO, SignUpTeacherDTO } from "./auth.dto";
+import { ConfirmOtpDTO, LoginDTO, SignUpStudentDTO, SignUpTeacherDTO } from "./auth.dto";
 import AuthFactory from "./auth.factory";
 import { IUser } from "../../utils/interface";
 import { UserRepository } from "../../DB/user/user.repository";
@@ -8,11 +8,15 @@ import AuthResponse from "./auth.response";
 import sendEmail from "../../utils/email";
 import verifyEmailTemplate from "../../utils/email/temp/verify.email";
 import { decryptValue } from "../../utils/encrypt";
+import { compareValue } from "../../utils/hash";
+import { RoleUSER } from "../../utils/enum";
+import { TokenRepository } from "../../DB/token/token.repository";
 class AuthenticationService {
     constructor(
         private readonly authFactory: typeof AuthFactory,
         private readonly userRepository: UserRepository,
-        private readonly authResponse: typeof AuthResponse
+        private readonly authResponse: typeof AuthResponse,
+        private readonly tokenRepository: TokenRepository
     ) { }
 
     private sendMaillerVerify = async ({ email, otp, otpExpires }: { email: string; otp: string; otpExpires: Date }) => {
@@ -26,7 +30,6 @@ class AuthenticationService {
             html: verifyEmailTemplate(email, otp, remendOtpExpire)
         });
     }
-    //Login for student or teacher 
 
     //Sign Up student
     public signUpStudent = async (req: Request, res: Response) => {
@@ -177,6 +180,45 @@ class AuthenticationService {
         return res.status(200).json(response);
     }
 
+    //Login for student or teacher 
+    public login = async (req: Request, res: Response) => {
+        //DTO login {email / password }
+        const loginDTO: LoginDTO = req.body;
+        // check email exist
+        const exist = await this.userRepository.getOne({ filter: { email: loginDTO.email } });
+        // emails is verify 
+        if (!exist) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        if (!exist.isVerified) {
+            return res.status(400).json({
+                success: false,
+                message: "User not verified"
+            });
+        }
+        // match password 
+        const isPasswordMatch = await compareValue({ value: loginDTO.password, hash: exist.password });
+        if (!isPasswordMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid password"
+            });
+        }
+        //factory  generate token with role  - student | teacher
+        const token = this.authFactory.generateToken({ userId: exist.id, role: exist.role as RoleUSER, email: exist.email });
+        // saving token refresh in DB
+        await this.tokenRepository.create({
+            userId: exist.id,
+            roleUser: exist.role,
+            token: token.refreshToken,
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+        } as any);
+        // response    
+        return res.status(200).json(this.authResponse.loginResponse(token));
+    }
 
 
     //Reset Password
@@ -186,4 +228,4 @@ class AuthenticationService {
 }
 
 
-export default new AuthenticationService(AuthFactory, new UserRepository(), AuthResponse);
+export default new AuthenticationService(AuthFactory, new UserRepository(), AuthResponse, new TokenRepository());
