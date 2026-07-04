@@ -7,6 +7,7 @@ import { connectDatabase } from "./DB/connect.database";
 
 //import modules 
 import authController from "./modules/auth/auth.controller";
+import { userController } from "./modules/user/user.controller";
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -37,6 +38,7 @@ export const bootstrap = async (app: Express, express: any): Promise<void> => {
 
     // All Modules
     app.use("/api/v1/auth", authController);
+    app.use("/api/v1/user", userController);
     app.listen(port, () => {
         console.log(`Server running on port http://localhost:${port}`);
     });
