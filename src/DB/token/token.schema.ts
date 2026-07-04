@@ -4,7 +4,7 @@ import { RoleUSER } from "../../utils/enum";
 
 export const tokenSchema = new Schema<IToken>({
     userId: { type: String, required: true },
-    roleUser: { type: String, required: true, enum: RoleUSER },
+    role: { type: String, required: true, enum: RoleUSER },
     token: { type: String, required: true },
     expires: { type: Date, required: true },
     isRevoked: { type: Boolean, default: false },

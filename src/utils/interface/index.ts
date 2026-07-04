@@ -17,7 +17,7 @@ export interface IUser {
 export interface IToken {
     readonly id: string;
     userId: string;
-    roleUser: string;
+    role: string;
     token: string;
     expires: Date;
     isRevoked: boolean;

@@ -213,7 +213,7 @@ class AuthenticationService {
         // saving token refresh in DB
         await this.tokenRepository.create({
             userId: exist.id,
-            roleUser: exist.role,
+            role: exist.role,
             token: token.refreshToken,
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
         } as any);

@@ -87,11 +87,14 @@ export const authMiddleware = async (
 
         const tokenRepo = new TokenRepository();
         const userRepo = new UserRepository();
+        console.log("token", token);
+        console.log("payloadUser.role", payloadUser.role);
 
         const [tokenInDB, user] = await Promise.all([
-            tokenRepo.getOne({ filter: { token, roleUser: payloadUser.roleUser } }),
+            tokenRepo.getOne({ filter: { token, role: payloadUser.role } }),
             userRepo.getOne({ filter: { _id: payloadUser.userId } }),
         ]);
+        console.log(tokenInDB);
 
         if (!tokenInDB) {
             return res.status(403).json({ message: "Invalid token" });
@@ -115,7 +118,7 @@ export const authMiddleware = async (
             return res.status(403).json({ message: "Token expired, you need login again" });
         }
         if (err instanceof jwt.JsonWebTokenError) {
-            return res.status(401).json({ message: "Invalid token" });
+            return res.status(401).json({ message: "Invalid token🔴" });
         }
         return res.status(500).json({ message: "Internal server error" });
     }
