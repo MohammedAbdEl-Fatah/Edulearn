@@ -7,9 +7,8 @@ export const tokenSchema = new Schema<IToken>({
     roleUser: { type: String, required: true, enum: RoleUSER },
     token: { type: String, required: true },
     expires: { type: Date, required: true },
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true },
-   }, {
+    isRevoked: { type: Boolean, default: false },
+}, {
     timestamps: true,
     versionKey: false,
 })

@@ -20,6 +20,5 @@ export interface IToken {
     roleUser: string;
     token: string;
     expires: Date;
-    createdAt: Date;
-    updatedAt: Date;
+    isRevoked: boolean;
 }
