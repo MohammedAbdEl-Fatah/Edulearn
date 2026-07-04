@@ -11,7 +11,6 @@ class AuthResponse {
                 Name: `${user.firstName} ${user.lastName}`,
                 email: user.email,
                 dob: user.dob,
-                //TODO Fix issue problem why value phone can't decryto in result but otp was work.
                 phone: decryptValue(user.phone),
                 role: user.role,
                 isVerified: user.isVerified,
@@ -31,7 +30,6 @@ class AuthResponse {
                 Name: `${user.firstName} ${user.lastName}`,
                 email: user.email,
                 dob: user.dob,
-                //TODO Fix issue problem why value phone can't decryto in result but otp was work.
                 phone: decryptValue(user.phone),
                 role: user.role,
                 isVerified: user.isVerified,

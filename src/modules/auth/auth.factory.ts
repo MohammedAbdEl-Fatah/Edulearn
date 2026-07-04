@@ -11,13 +11,13 @@ class AuthFactory {
     ): Promise<Omit<IUser, "id">> {
         const studentUser: Omit<IUser, "id"> = {
 
-            firstName: body.fristName,
+            firstName: body.firstName,
             lastName: body.lastName,
             role: RoleUSER.STUDENT,
             dob: body.dob,
             email: body.email,
             password: await hashValue(body.password),
-            phone: encryptValue(body.phoneNumber),
+            phone: encryptValue(body.phone),
             isVerified: false,
             otp: encryptValue(generateOtp()),
             otpExpires: generateOtpExpire(4),
@@ -33,13 +33,13 @@ class AuthFactory {
     ): Promise<Omit<IUser, "id">> {
         const teacherUser: Omit<IUser, "id"> = {
 
-            firstName: body.fristName,
+            firstName: body.firstName,
             lastName: body.lastName,
             role: RoleUSER.TEACHER,
             dob: body.dob,
             email: body.email,
             password: await hashValue(body.password),
-            phone: encryptValue(body.phoneNumber),
+            phone: encryptValue(body.phone),
             isVerified: false,
             otp: encryptValue(generateOtp()),
             otpExpires: generateOtpExpire(4),

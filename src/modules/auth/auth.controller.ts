@@ -1,20 +1,29 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+import { isValidationBody } from "../../middleware/validation.middleware";
 import authService from "./auth.service";
+import authValidation from "./auth.validation";
 const router: Router = Router();
-router.post("/sign-up/student", (req: Request, res: Response) => {
+router.post(
+    "/sign-up/student",
+    isValidationBody(authValidation.registerValidation),
+    authService.signUpStudent
+);
 
-    authService.signUpStudent(req, res);
-});
-router.post("/sign-up/teacher", (req: Request, res: Response) => {
+router.post(
+    "/sign-up/teacher",
+    isValidationBody(authValidation.registerValidation),
+    authService.signUpTeacher
+);
 
-    authService.signUpTeacher(req, res);
-});
-router.put("/confirm-email", (req: Request, res: Response) => {
+router.put(
+    "/confirm-email",
+    isValidationBody(authValidation.verifyEmailValidation),
+    authService.confirmEmail
+);
 
-    authService.confirmEmail(req, res);
-});
-router.post("/login", (req: Request, res: Response) => {
-
-    authService.login(req, res);
-});
+router.post(
+    "/login",
+    isValidationBody(authValidation.loginValidation),
+    authService.login
+);
 export default router;

@@ -1,22 +1,22 @@
 export interface SignUpStudentDTO {
-    fristName: string;
+    firstName: string;
     lastName: string;
     email: string;
     password: string;
     confirmPassword:string;
     dob:Date;
-    phoneNumber:string;
+    phone:string;
 }
 
 export interface SignUpTeacherDTO {
-    fristName: string;
+    firstName: string;
     lastName: string;
     email: string;
     password: string;
     confirmPassword:string;
     subjectCourse: string[];
     dob:Date;
-    phoneNumber:string;
+    phone:string;
 }
 export interface ConfirmOtpDTO{
     email:string,

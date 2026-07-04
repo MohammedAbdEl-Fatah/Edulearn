@@ -33,6 +33,7 @@ class AuthenticationService {
 
     //Sign Up student
     public signUpStudent = async (req: Request, res: Response) => {
+        console.log("body:", req.body);
         const reqestBodyDTO: SignUpStudentDTO = req.body;
 
         if (!reqestBodyDTO.email) {
