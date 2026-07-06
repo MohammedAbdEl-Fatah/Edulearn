@@ -2,6 +2,7 @@ import { Router } from "express";
 import { isValidationBody } from "../../middleware/validation.middleware";
 import authService from "./auth.service";
 import authValidation from "./auth.validation";
+import { authMiddleware } from "../../middleware/auth,middleware";
 const router: Router = Router();
 router.post(
     "/sign-up/student",
@@ -25,5 +26,10 @@ router.post(
     "/login",
     isValidationBody(authValidation.loginValidation),
     authService.login
+);
+router.patch(
+    "/logout",
+    authMiddleware,
+    authService.logOut
 );
 export default router;

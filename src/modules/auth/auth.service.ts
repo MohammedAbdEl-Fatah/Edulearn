@@ -226,6 +226,20 @@ class AuthenticationService {
     //Forget Password 
     // refresh Token Role
     // Logout with revoke token 
+    public logOut = async (req: Request, res: Response) => {
+
+        //TODO think about revoke token time to cronJob???
+        const revokeToken = req.headers.authorization?.split(" ")[1];
+        if (revokeToken) {
+            // revoke token
+            await this.tokenRepository.updateOne({ filter: { token: revokeToken }, projection: { $set: { isRevoked: true } } });
+        }
+        res.status(200).json({
+            success: true,
+            message: "Logout successful"
+        });
+        //TODO cronJob delete Token is revoked or expire Token
+    };
 }
 
 
