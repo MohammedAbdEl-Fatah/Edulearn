@@ -51,10 +51,10 @@ class AuthFactory {
     }
 
 
-    public async generateOtp(): Promise<{ otp: string; otpExpires: Date }> {
+    public async generateOtp({ time = 4 }: { time?: number }): Promise<{ otp: string; otpExpires: Date }> {
         return {
             otp: encryptValue(generateOtp()),
-            otpExpires: generateOtpExpire(4)
+            otpExpires: generateOtpExpire(time)
         };
     }
 
