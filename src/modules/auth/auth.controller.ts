@@ -32,4 +32,8 @@ router.patch(
     authMiddleware,
     authService.logOut
 );
+router.post(
+    "/refresh-token",
+    authService.refreshToken
+);
 export default router;

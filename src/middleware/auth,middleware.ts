@@ -7,7 +7,7 @@ import { RoleUSER } from "../utils/enum";
 import { TokenSecret } from "../utils/generated";
 import { IToken } from "../utils/interface";
 
-const verifyToken = (token: string, valueSecret: string): jwt.JwtPayload => {
+export const verifyToken = (token: string, valueSecret: string): jwt.JwtPayload => {
     return jwt.verify(token, valueSecret) as jwt.JwtPayload;
 };
 
@@ -94,7 +94,6 @@ export const authMiddleware = async (
             tokenRepo.getOne({ filter: { token, role: payloadUser.role } }),
             userRepo.getOne({ filter: { _id: payloadUser.userId } }),
         ]);
-        console.log(tokenInDB);
 
         if (!tokenInDB) {
             return res.status(403).json({ message: "Invalid token" });

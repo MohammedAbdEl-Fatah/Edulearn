@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { ConfirmOtpDTO, LoginDTO, SignUpStudentDTO, SignUpTeacherDTO } from "./auth.dto";
 import AuthFactory from "./auth.factory";
-import { IUser } from "../../utils/interface";
+import { IToken, IUser } from "../../utils/interface";
 import { UserRepository } from "../../DB/user/user.repository";
 import AuthResponse from "./auth.response";
+import jwt from "jsonwebtoken";
 
 import sendEmail from "../../utils/email";
 import verifyEmailTemplate from "../../utils/email/temp/verify.email";
@@ -11,6 +12,8 @@ import { decryptValue } from "../../utils/encrypt";
 import { compareValue } from "../../utils/hash";
 import { RoleUSER } from "../../utils/enum";
 import { TokenRepository } from "../../DB/token/token.repository";
+import { verifyToken } from "../../middleware/auth,middleware";
+import { TokenSecret } from "../../utils/generated";
 class AuthenticationService {
     constructor(
         private readonly authFactory: typeof AuthFactory,
@@ -186,7 +189,7 @@ class AuthenticationService {
         //DTO login {email / password }
         const loginDTO: LoginDTO = req.body;
         // check email exist
-        const exist = await this.userRepository.getOne({ filter: { email: loginDTO.email } });
+        const exist = await this.userRepository.getOne({ filter: { email: loginDTO.email, isVerified: true } });
         // emails is verify 
         if (!exist) {
             return res.status(404).json({
@@ -194,12 +197,13 @@ class AuthenticationService {
                 message: "User not found"
             });
         }
-        if (!exist.isVerified) {
-            return res.status(400).json({
-                success: false,
-                message: "User not verified"
-            });
-        }
+        // // not working 
+        // if (!exist.isVerified) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "User not verified"
+        //     });
+        // }
         // match password 
         const isPasswordMatch = await compareValue({ value: loginDTO.password, hash: exist.password });
         if (!isPasswordMatch) {
@@ -224,7 +228,80 @@ class AuthenticationService {
 
     //Reset Password
     //Forget Password 
+    
+
+
+    
     // refresh Token Role
+    public refreshToken = async (
+        req: Request, res: Response
+    ) => {
+        // no there middleware 
+        // get token from headers type refresh Token
+        const [schemaAuth, token] = req.headers.authorization?.split(" ") || [];
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+        if (
+            schemaAuth !== RoleUSER.TEACHER &&
+            schemaAuth !== RoleUSER.STUDENT
+        ) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        //verify token 
+        let payloadUser: jwt.JwtPayload & IToken;
+        if (schemaAuth === RoleUSER.TEACHER) {
+            payloadUser = verifyToken(
+                token,
+                TokenSecret.secretUserTeacherRefreshToken
+            ) as jwt.JwtPayload & IToken;
+        } else {
+            payloadUser = verifyToken(
+                token,
+                TokenSecret.secretUserStudentRefreshToken
+            ) as jwt.JwtPayload & IToken;
+        }
+        // exist token from datebase
+        const [tokenInDB, user] = await Promise.all([
+            this.tokenRepository.getOne({ filter: { token, role: payloadUser.role } }),
+            this.userRepository.getOne({ filter: { _id: payloadUser.userId } }),
+        ]);
+        if (!tokenInDB) {
+            return res.status(403).json({ message: "Invalid token" });
+        }
+        if (tokenInDB.isRevoked) {
+            return res.status(403).json({ message: "Token revoked" });
+        }
+        if (tokenInDB.expires.getTime() < Date.now()) {
+            return res
+                .status(403)
+                .json({ message: "Refresh token expired, you need login again" });
+        }
+        if (!user) {
+            return res.status(403).json({ message: "User not exist" });
+        }
+        //factory generated token 
+
+        const newToken = this.authFactory.generateToken({ userId: user.id, role: user.role as RoleUSER, email: user.email });
+
+
+        //update token
+        await this.tokenRepository.create({
+            userId: user.id,
+            role: user.role,
+            token: newToken.refreshToken,
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+        } as any);
+        // response
+        res.status(200).json({
+            success: true,
+            message: "Refresh token successful",
+            token: newToken
+        });
+    };
     // Logout with revoke token 
     public logOut = async (req: Request, res: Response) => {
 
