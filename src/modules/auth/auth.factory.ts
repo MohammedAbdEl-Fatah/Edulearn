@@ -76,6 +76,9 @@ class AuthFactory {
             })
         };
     }
+    public async newPassword(password: string): Promise<string> {
+        return await hashValue(password);
+    }
 }
 
 export default new AuthFactory();

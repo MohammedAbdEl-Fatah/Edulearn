@@ -30,3 +30,8 @@ export interface LoginDTO{
 export interface GeneratedOTPDTO{
     email:string;
 }
+export interface ForgetPasswordDTO{
+    email:string;
+    otp:string;
+    newPassword:string;
+}

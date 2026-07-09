@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ConfirmOtpDTO, LoginDTO, SignUpStudentDTO, SignUpTeacherDTO } from "./auth.dto";
+import * as AuthDTO from "./auth.dto";
 import AuthFactory from "./auth.factory";
 import { IToken, IUser } from "../../utils/interface";
 import { UserRepository } from "../../DB/user/user.repository";
@@ -10,7 +10,7 @@ import sendEmail from "../../utils/email";
 import verifyEmailTemplate from "../../utils/email/temp/verify.email";
 import { decryptValue } from "../../utils/encrypt";
 import { compareValue } from "../../utils/hash";
-import { RoleUSER } from "../../utils/enum";
+import { EmailType, RoleUSER } from "../../utils/enum";
 import { TokenRepository } from "../../DB/token/token.repository";
 import { verifyToken } from "../../middleware/auth,middleware";
 import { TokenSecret } from "../../utils/generated";
@@ -22,22 +22,39 @@ class AuthenticationService {
         private readonly tokenRepository: TokenRepository
     ) { }
 
-    private sendMaillerVerify = async ({ email, otp, otpExpires }: { email: string; otp: string; otpExpires: Date }) => {
+    private sendMaillerVerify = async ({ type, email, otp, otpExpires }: { type: string; email: string; otp: string; otpExpires: Date }) => {
         const remendOtpExpire = Math.ceil(
             (otpExpires.getTime() - Date.now()) / (1000 * 60)
         );
-        await sendEmail({
-            email: email,
-            subject: "Verify Email",
-            text: "Verify Email",
-            html: verifyEmailTemplate(email, otp, remendOtpExpire)
-        });
+        switch (type) {
+            case EmailType.VERIFY:
+                await sendEmail({
+                    email: email,
+                    subject: "Verify Email",
+                    text: "Verify Email",
+                    html: verifyEmailTemplate(email, otp, remendOtpExpire)
+                });
+                break;
+            case EmailType.FORGOT:
+                await sendEmail({
+                    email: email,
+                    subject: "Forgot Password",
+                    text: "Forgot Password",
+                    html: verifyEmailTemplate(email, otp, remendOtpExpire)
+                });
+                break;
+
+            default:
+                break;
+        }
+
     }
+
 
     //Sign Up student
     public signUpStudent = async (req: Request, res: Response) => {
         console.log("body:", req.body);
-        const reqestBodyDTO: SignUpStudentDTO = req.body;
+        const reqestBodyDTO: AuthDTO.SignUpStudentDTO = req.body;
 
         if (!reqestBodyDTO.email) {
             return res.status(400).json({
@@ -67,6 +84,7 @@ class AuthenticationService {
 
         const userResponse = this.authResponse.signUpStudentResponse(user);
         await this.sendMaillerVerify({
+            type: EmailType.VERIFY,
             email: user.email,
             otp: decryptValue(user.otp),
             otpExpires: user.otpExpires
@@ -76,7 +94,7 @@ class AuthenticationService {
     }
     //Sign Up teacher 
     public signUpTeacher = async (req: Request, res: Response) => {
-        const reqestBodyDTO: SignUpTeacherDTO = req.body;
+        const reqestBodyDTO: AuthDTO.SignUpTeacherDTO = req.body;
 
         if (!reqestBodyDTO.email) {
             return res.status(400).json({
@@ -106,6 +124,7 @@ class AuthenticationService {
 
         const userResponse = this.authResponse.signUpTeacherResponse(user);
         await this.sendMaillerVerify({
+            type: EmailType.VERIFY,
             email: user.email,
             otp: decryptValue(user.otp),
             otpExpires: user.otpExpires
@@ -121,7 +140,7 @@ class AuthenticationService {
 
     //confrim Email Student or Teacher 
     public confirmEmail = async (req: Request, res: Response) => {
-        const confirmOtpDTO: ConfirmOtpDTO = req.body;
+        const confirmOtpDTO: AuthDTO.ConfirmOtpDTO = req.body;
         //* more scures - check from db include value or throw error if not found
         //email exist 
         const exist = await this.userRepository.getOne({ filter: { email: confirmOtpDTO.email } });
@@ -142,13 +161,15 @@ class AuthenticationService {
         if (exist.otpExpires < new Date()) {
 
             //factory saving new otp
-            const otpFactory = await this.authFactory.generateOtp();
+            const otpFactory = await this.authFactory.generateOtp({ time: 5 });
             await this.userRepository.updateOne({
                 filter: { email: confirmOtpDTO.email },
                 projection: { $set: { otp: otpFactory.otp, otpExpires: otpFactory.otpExpires } }
             });
 
             await this.sendMaillerVerify({
+
+                type: EmailType.VERIFY,
                 email: confirmOtpDTO.email,
                 otp: decryptValue(otpFactory.otp),
                 otpExpires: otpFactory.otpExpires
@@ -187,7 +208,7 @@ class AuthenticationService {
     //Login for student or teacher 
     public login = async (req: Request, res: Response) => {
         //DTO login {email / password }
-        const loginDTO: LoginDTO = req.body;
+        const loginDTO: AuthDTO.LoginDTO = req.body;
         // check email exist
         const exist = await this.userRepository.getOne({ filter: { email: loginDTO.email, isVerified: true } });
         // emails is verify 
@@ -197,13 +218,7 @@ class AuthenticationService {
                 message: "User not found"
             });
         }
-        // // not working 
-        // if (!exist.isVerified) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "User not verified"
-        //     });
-        // }
+
         // match password 
         const isPasswordMatch = await compareValue({ value: loginDTO.password, hash: exist.password });
         if (!isPasswordMatch) {
@@ -225,13 +240,84 @@ class AuthenticationService {
         return res.status(200).json(this.authResponse.loginResponse(token));
     }
 
-
-    //Reset Password
+    //generated otp for forget password
+    public generateOtpForForgetPassword = async (
+        req: Request, res: Response
+    ) => {
+        //email is exist or not and confirm 
+        const generatedOtpDTO: AuthDTO.GeneratedOTPDTO = req.body;
+        const exist = await this.userRepository.getOne({ filter: { email: generatedOtpDTO.email, isVerified: true } });
+        if (!exist) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        // generate otp
+        const otpFactory = await this.authFactory.generateOtp({ time: 6 });
+        // send otp to email
+        await this.sendMaillerVerify({
+            type: EmailType.FORGOT,
+            email: generatedOtpDTO.email,
+            otp: decryptValue(otpFactory.otp),
+            otpExpires: otpFactory.otpExpires
+        });
+        // save otp in db in user collection 
+        await this.userRepository.updateOne({
+            filter: { email: generatedOtpDTO.email },
+            projection: { $set: { otp: otpFactory.otp, otpExpires: otpFactory.otpExpires } }
+        });
+        // return success
+        return res.status(200).json({
+            success: true,
+            message: "OTP generated successfully"
+        });
+    };
     //Forget Password 
-    
+
+    public forgetPassword = async (
+        req: Request, res: Response
+    ) => {
+        // email is exist or not and confirm
+        const forgetPasswordDTO: AuthDTO.ForgetPasswordDTO = req.body;
+        const exist = await this.userRepository.getOne({ filter: { email: forgetPasswordDTO.email, isVerified: true } });
+        if (!exist) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        //otp is not expire 
+        if (exist.otpExpires < new Date()) {
+            return res.status(400).json({
+                success: false,
+                message: "OTP expired"
+            });
+        }
+        // otp match 
+
+        if (decryptValue(exist.otp) !== forgetPasswordDTO.otp) {
+            return res.status(400).json({
+                success: false,
+                message: "OTP not match"
+            });
+        }
+        // factory password 
+        const newPassword = await this.authFactory.newPassword(forgetPasswordDTO.newPassword);
+        // update password in DB 
+        await this.userRepository.updateOne({
+            filter: { email: forgetPasswordDTO.email },
+            projection: { $set: { password: newPassword } }
+        });
+        // responce
+        return res.status(200).json({
+            success: true,
+            message: "Password updated successfully"
+        });
+    };
 
 
-    
+
     // refresh Token Role
     public refreshToken = async (
         req: Request, res: Response
