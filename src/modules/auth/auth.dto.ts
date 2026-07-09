@@ -27,3 +27,6 @@ export interface LoginDTO{
     email:string,
     password:string
 }
+export interface GeneratedOTPDTO{
+    email:string;
+}
