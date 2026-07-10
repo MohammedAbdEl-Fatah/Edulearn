@@ -36,4 +36,6 @@ router.post(
     "/refresh-token",
     authService.refreshToken
 );
+router.post("/generated-otp", isValidationBody(authValidation.generateOtpValidation), authService.generateOtpForForgetPassword);
+router.post("/forget-password", isValidationBody(authValidation.forgetPasswordValidation), authService.forgetPassword);
 export default router;

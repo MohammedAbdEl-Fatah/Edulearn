@@ -27,5 +27,15 @@ class AuthValidation {
                 .regex(/^\d+$/, { error: "OTP must contain only numbers" }),
             email: z.email().min(4, { error: "Email is required" }),
         });
+    public generateOtpValidation = this.verifyEmailValidation.pick({
+        email: true,
+    });
+
+    public forgetPasswordValidation = this.verifyEmailValidation.pick({
+        email: true,
+        otp: true,
+    }).extend({
+        newPassword: z.string().min(6, { error: "Password must be at least 6 characters" }),
+    });
 }
 export default new AuthValidation();
