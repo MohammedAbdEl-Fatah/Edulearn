@@ -382,7 +382,7 @@ class AuthenticationService {
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
         } as any);
         // response
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Refresh token successful",
             token: newToken
