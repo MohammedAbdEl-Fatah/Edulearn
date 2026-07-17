@@ -111,7 +111,7 @@ export const authMiddleware = async (
         }
 
         req.user = user;
-        next();
+        return next();
     } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
             return res.status(403).json({ message: "Token expired, you need login again" });
