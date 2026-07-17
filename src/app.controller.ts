@@ -3,11 +3,14 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { connectDatabase } from "./DB/connect.database";
+import swaggerUIExpress from "swagger-ui-express";
 
 
 //import modules 
 import authController from "./modules/auth/auth.controller";
 import { userController } from "./modules/user/user.controller";
+import { env } from "./config/env.local";
+import swaggerSpec from "./utils/swagger";
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -17,7 +20,7 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
-const port: number = parseInt(process.env.PORT || "3000", 10);
+const port: number = parseInt(env.PORT || "8000");
 export const bootstrap = async (app: Express, express: any): Promise<void> => {
 
 
@@ -34,7 +37,9 @@ export const bootstrap = async (app: Express, express: any): Promise<void> => {
         limiter,
         helmet());
 
-
+    //* swagger Api 
+    app.use('/api-docs', swaggerUIExpress.serve, swaggerUIExpress.setup(swaggerSpec));
+    app.use('/api-docs.json', (_, res) => res.json(swaggerSpec));
 
     // All Modules
     app.use("/api/v1/auth", authController);

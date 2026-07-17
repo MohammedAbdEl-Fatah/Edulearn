@@ -2,6 +2,7 @@ import { config } from "dotenv";
 config();
 
 export const env = {
+        PORT: process.env.PORT,
         mongoUri: process.env.MONGO_URI,
         SALT_ROUND: process.env.SALT_ROUND,
         USER_EMAIL: process.env.USER_EMAIL,
@@ -11,4 +12,5 @@ export const env = {
         SECRET_TOKEN_ACCESS_TEACHER: process.env.SECRET_TOKEN_ACCESS_TEACHER,
         SECRET_TOKEN_REFRESH_STUDENT: process.env.SECRET_TOKEN_REFRESH_STUDENT,
         SECRET_TOKEN_REFRESH_TEACHER: process.env.SECRET_TOKEN_REFRESH_TEACHER
+
 };

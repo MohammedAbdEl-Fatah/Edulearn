@@ -4,6 +4,12 @@ import authService from "./auth.service";
 import authValidation from "./auth.validation";
 import { authMiddleware } from "../../middleware/auth,middleware";
 const router: Router = Router();
+/**
+ * @api {post} /auth/sign-up/student Sign Up Student
+ * @apiName SignUpStudent
+ * @apiGroup Auth
+ * @apiVersion 1.0.0
+ */
 router.post(
     "/sign-up/student",
     isValidationBody(authValidation.registerValidation),
