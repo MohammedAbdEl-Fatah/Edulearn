@@ -42,9 +42,14 @@ export const bootstrap = async (app: Express, express: any): Promise<void> => {
     app.use('/api-docs.json', (_, res) => res.json(swaggerSpec));
 
     // All Modules
+    app.use("/",(req,res)=>{
+        res.json({message:"Hello World"});
+    })
     app.use("/api/v1/auth", authController);
     app.use("/api/v1/user", userController);
     app.listen(port, () => {
         console.log(`Server running on port http://localhost:${port}`);
+    });
+};
     });
 };
