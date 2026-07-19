@@ -12,7 +12,7 @@ import { decryptValue } from "../../utils/encrypt";
 import { compareValue } from "../../utils/hash";
 import { EmailType, RoleUSER } from "../../utils/enum";
 import { TokenRepository } from "../../DB/token/token.repository";
-import { verifyToken } from "../../middleware/auth,middleware";
+import { verifyToken } from "../../middleware/auth.middleware";
 import { TokenSecret } from "../../utils/generated";
 class AuthenticationService {
     constructor(
