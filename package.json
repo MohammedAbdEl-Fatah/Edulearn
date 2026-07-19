@@ -5,10 +5,13 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc",
-    "start": "node ./src/index.js",
+    "start": "node dist/index.js",
     "dev:run": "concurrently \"npm run dev:ts\" \"npm run dev:node\"",
     "dev:ts": "tsc --watch",
     "dev:node": "node --watch dist/index.js"
+  },
+  "engines": {
+    "node": "22.11.0"
   },
   "keywords": [],
   "author": "",
