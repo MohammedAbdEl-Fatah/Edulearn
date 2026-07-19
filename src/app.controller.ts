@@ -51,5 +51,3 @@ export const bootstrap = async (app: Express, express: any): Promise<void> => {
         console.log(`Server running on port http://localhost:${port}`);
     });
 };
-    });
-};
