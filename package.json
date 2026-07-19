@@ -4,6 +4,8 @@
   "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
+    "build": "tsc",
+    "start": "node ./src/index.js",
     "dev:run": "concurrently \"npm run dev:ts\" \"npm run dev:node\"",
     "dev:ts": "tsc --watch",
     "dev:node": "node --watch dist/index.js"
