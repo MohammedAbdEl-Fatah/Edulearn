@@ -3,7 +3,7 @@ import { z } from "zod";
 class AuthValidation {
 
     public registerValidation = z.strictObject({
-        firstName: z.string().min(1, { error: "First name is required" }),
+        fristName: z.string().min(1, { error: "Frist name is required" }),
         lastName: z.string().min(1, { error: "Last name is required" }),
         phone: z.string().optional(),
         dob: z.coerce.date({ error: "Date of birth is required" }),
