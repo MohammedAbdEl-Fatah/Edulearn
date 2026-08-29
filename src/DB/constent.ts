@@ -1,4 +1,4 @@
-export enum ContentModel {
+export enum ConstentModel {
     USER = "User",
     COURSE = "Course",
     SESSION = "Session",
