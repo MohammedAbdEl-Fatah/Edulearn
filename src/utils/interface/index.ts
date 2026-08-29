@@ -1,5 +1,7 @@
+import { Types } from "mongoose";
+
 export interface IUser {
-    readonly id: string;
+    readonly id: Types.ObjectId;
     firstName: string;
     lastName: string;
     email: string;
@@ -23,8 +25,8 @@ export interface IToken {
     isRevoked: boolean;
 }
 export interface ICourse {
-    readonly id: string;
-    instructorId: string;
+    readonly id: Types.ObjectId;
+    instructorId: Types.ObjectId;
     title: string;
     description: string;
     //price and discount
@@ -38,9 +40,9 @@ export interface ICourse {
     updatedAt: Date;
 }
 export interface IReview {
-    readonly id: string;
-    userId: string;
-    courseId: string;
+    readonly id: Types.ObjectId;
+    userId: Types.ObjectId;
+    courseId: Types.ObjectId;
     rating: number;
     comment: string;
     createdAt: Date;
@@ -48,29 +50,32 @@ export interface IReview {
 }
 
 export interface ISession {
-    readonly id: string;
-    courseId: string;
+    readonly id: Types.ObjectId;
+    courseId: Types.ObjectId;
     title: string;
-    videos:IVideo[];
-    pdfs:IPdf[];
+    videos: IVideo[];
+    pdfs: IPdf[];
+    duration: number;
     createdAt: Date;
     updatedAt: Date;
 }
 
 export interface IVideo {
-    readonly id: string;
-    sessionId: string;
+    readonly id: Types.ObjectId;
+    sessionId: Types.ObjectId;
     title: string;
     url: string;
+    order: number;
     createdAt: Date;
     updatedAt: Date;
 }
 
 export interface IPdf {
-    readonly id: string;
-    sessionId: string;
+    readonly id: Types.ObjectId;
+    sessionId: Types.ObjectId;
     title: string;
     url: string;
+    order: number;
     createdAt: Date;
     updatedAt: Date;
 }
