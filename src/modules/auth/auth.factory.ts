@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { encryptValue } from "../../utils/encrypt";
 import { RoleUSER, TokenType } from "../../utils/enum";
 import { generatedToken, generateOtp, generateOtpExpire } from "../../utils/generated";
@@ -59,7 +60,7 @@ class AuthFactory {
     }
 
     public generateToken({ userId, role, email }:
-        { userId: string; role: RoleUSER; email: string })
+        { userId: Types.ObjectId; role: RoleUSER; email: string })
         : { accessToken: string; refreshToken: string } {
         return {
             accessToken: generatedToken({
