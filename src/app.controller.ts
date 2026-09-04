@@ -49,7 +49,7 @@ export const bootstrap = (app: Express, express: any): void => {
     });
 
     app.get("/", (_req, res) => {
-        res.json({ message: "Hello World" });
+        res.json({ message: "Hello World", date: Date.now() });
     });
     app.use("/api/v1/auth", authController);
     app.use("/api/v1/user", userController);
