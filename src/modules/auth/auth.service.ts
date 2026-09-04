@@ -209,9 +209,12 @@ class AuthenticationService {
     public login = async (req: Request, res: Response) => {
         //DTO login {email / password }
         const loginDTO: AuthDTO.LoginDTO = req.body;
+        console.log({loginDTO});
         // check email exist
-        const exist = await this.userRepository.getOne({ filter: { email: loginDTO.email, isVerified: true } });
+        const exist = await this.userRepository.getOne({ filter: { email: loginDTO.email } });
         // emails is verify 
+        console.log({exist});
+        
         if (!exist) {
             return res.status(404).json({
                 success: false,
@@ -407,3 +410,4 @@ class AuthenticationService {
 
 
 export default new AuthenticationService(AuthFactory, new UserRepository(), AuthResponse, new TokenRepository());
+

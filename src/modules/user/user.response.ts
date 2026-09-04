@@ -13,4 +13,4 @@ class UserResponse {
 
     }
 }
-export default new UserResponse();
+export default  UserResponse;

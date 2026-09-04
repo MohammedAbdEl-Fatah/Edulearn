@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../../middleware/auth.middleware";
-import { userService } from "./user.service";
+import userService from "./user.service";
 export const userController = Router();
 userController.get("/profile",
     //middleware auth

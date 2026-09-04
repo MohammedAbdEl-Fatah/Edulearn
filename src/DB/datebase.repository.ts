@@ -5,7 +5,7 @@ export abstract class DatabaseRepository<T> {
 
 
 
-    async create(item: T): Promise<T & Document> {
+    async create(item: Omit<T, "id">): Promise<T & Document> {
         const doc = new this.model(item);
         return await doc.save() as unknown as Promise<T & Document>;
     }

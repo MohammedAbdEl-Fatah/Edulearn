@@ -3,6 +3,7 @@ config();
 
 export const env = {
         PORT: process.env.PORT,
+        mongoUriLocal: process.env.MONGO_URI_LOCAL,
         mongoUri: process.env.MONGO_URI,
         SALT_ROUND: process.env.SALT_ROUND,
         USER_EMAIL: process.env.USER_EMAIL,

@@ -1,6 +1,15 @@
 import { Router } from "express";
+import CourseValidation from "./course.validation";
+import { isValidationBody } from "../../middleware/validation.middleware";
+import CourseService from "./course.service";
+import { authMiddleware } from "../../middleware/auth.middleware";
 
 
-const courseRouter = Router();
+export const courseController = Router();
 
-courseRouter.post("")
+courseController.post(
+    "/create-course",
+    isValidationBody(CourseValidation.createCourse),
+    authMiddleware,
+    CourseService.createCourse
+);

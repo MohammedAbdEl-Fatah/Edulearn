@@ -11,6 +11,7 @@ import authController from "./modules/auth/auth.controller";
 import { userController } from "./modules/user/user.controller";
 import { env } from "./config/env.local";
 import swaggerSpec from "./utils/swagger";
+import { courseController } from "./modules/course/coure.controller";
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -51,8 +52,10 @@ export const bootstrap = (app: Express, express: any): void => {
     app.get("/", (_req, res) => {
         res.json({ message: "Hello World", date: Date.now() });
     });
+    //modules
     app.use("/api/v1/auth", authController);
     app.use("/api/v1/user", userController);
+    app.use("/api/v1/course", courseController);
 
     if (process.env.VERCEL !== "1") {
         app.listen(port, () => {
