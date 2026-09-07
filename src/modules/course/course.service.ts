@@ -8,6 +8,7 @@ import CourseFactory from "./course.factory";
 import CourseResponse from "./course.reponse";
 import { RoleUSER } from "../../utils/enum";
 import { asyncHandleError } from "../../error/async.handle";
+import { AppError } from "../../error/app.error";
 
 class CourseService {
     constructor(
@@ -21,14 +22,14 @@ class CourseService {
         const createCourseDTO: CreateCourseDto = req.body;
         //check role user is teacher
         if (req.user?.role !== RoleUSER.TEACHER) {
-            return res.status(403).json({ message: "forbidden you dont have permission to create course" });
+            throw new AppError("forbidden you dont have permission to create course", 403);
         }
         //search course by title and instructorId
         const course = await this.courseRepository.getOne(
             { filter: { title: createCourseDTO.title, instructorId: req.user!.id } });
         //check caourse it exist for user 
         if (course) {
-            return res.status(400).json({ message: "Course already exists" });
+            throw new AppError("Course already exists", 400);
         }
         //factory course
         const courseData = this.courseFactory.createCourse(createCourseDTO, req.user!.id);
@@ -39,6 +40,20 @@ class CourseService {
         return res.status(201).json(responseCreateCourse);
     });
     //edit course
+    public editCourse = asyncHandleError(
+
+        //teacher can edit name course and price or discount 
+        //!add field hostiry for discount
+        async (req: Request, res: Response) => {
+
+        }
+
+    );
+
+
+
+
+
     //delete course
     //get course => mean select id from courses
     //get all courses
