@@ -7,6 +7,7 @@ import { CourseRepository } from "../../DB/course/course.repository";
 import CourseFactory from "./course.factory";
 import CourseResponse from "./course.reponse";
 import { RoleUSER } from "../../utils/enum";
+import { asyncHandleError } from "../../error/async.handle";
 
 class CourseService {
     constructor(
@@ -15,7 +16,7 @@ class CourseService {
         private readonly responseCourse: CourseResponse
     ) { }
     //create course
-    public createCourse = async (req: Request, res: Response) => {
+    public createCourse = asyncHandleError(async (req: Request, res: Response) => {
         //get data from req
         const createCourseDTO: CreateCourseDto = req.body;
         //check role user is teacher
@@ -36,7 +37,7 @@ class CourseService {
         //return response
         const responseCreateCourse = this.responseCourse.createCourseResponse(courseDB);
         return res.status(201).json(responseCreateCourse);
-    }
+    });
     //edit course
     //delete course
     //get course => mean select id from courses

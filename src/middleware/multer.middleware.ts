@@ -1,4 +1,5 @@
 import multer from "multer";
+import { AppError } from "../error/app.error";
 
 export class MulterService {
     private static imageInstance: multer.Multer;
@@ -18,7 +19,7 @@ export class MulterService {
                     if (isImage || isPdf) {
                         cb(null, true);
                     } else {
-                        cb(new Error('Only images and PDFs are allowed'));
+                        cb(new AppError('Only images and PDFs are allowed'));
                     }
                 },
             });
@@ -35,7 +36,7 @@ export class MulterService {
                     if (file.mimetype.startsWith('video/')) {
                         cb(null, true);
                     } else {
-                        cb(new Error('Only videos are allowed'));
+                        cb(new AppError('Only videos are allowed'));
                     }
                 },
             });

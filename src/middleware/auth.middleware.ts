@@ -6,6 +6,7 @@ import { UserRepository } from "../DB/user/user.repository";
 import { RoleUSER } from "../utils/enum";
 import { TokenSecret } from "../utils/generated";
 import { IToken } from "../utils/interface";
+import { AppError } from "../error/app.error";
 
 export const verifyToken = (token: string, valueSecret: string): jwt.JwtPayload => {
     return jwt.verify(token, valueSecret) as jwt.JwtPayload;
@@ -20,18 +21,18 @@ export const authMiddleware = async (
         // NOTE: Express lowercases incoming header names
         const accessToken = req.headers["accesstoken"] as string | undefined;
         if (!accessToken) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return next(new AppError("Unauthorized", 401));
         }
 
         const [schemaAccessToken, accessTokenValue] = accessToken.split(" ");
         if (!schemaAccessToken || !accessTokenValue) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return next(new AppError("Unauthorized", 401));
         }
         if (
             schemaAccessToken !== RoleUSER.TEACHER &&
             schemaAccessToken !== RoleUSER.STUDENT
         ) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return next(new AppError("Unauthorized", 401));
         }
 
         let payloadAccess: jwt.JwtPayload & IToken;
@@ -50,18 +51,18 @@ export const authMiddleware = async (
 
         const authorization = req.headers.authorization; // refresh token
         if (!authorization) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return next(new AppError("Unauthorized", 401));
         }
 
         const [schemaAuth, token] = authorization.split(" ");
         if (!schemaAuth || !token) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return next(new AppError("Unauthorized", 401));
         }
         if (
             schemaAuth !== RoleUSER.TEACHER &&
             schemaAuth !== RoleUSER.STUDENT
         ) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return next(new AppError("Unauthorized", 401));
         }
 
         let payloadUser: jwt.JwtPayload & IToken;
@@ -99,26 +100,24 @@ export const authMiddleware = async (
             return res.status(403).json({ message: "Invalid token" });
         }
         if (tokenInDB.isRevoked) {
-            return res.status(403).json({ message: "Token revoked" });
+            return next(new AppError("Token revoked", 403));
         }
         if (tokenInDB.expires.getTime() < Date.now()) {
-            return res
-                .status(403)
-                .json({ message: "Refresh token expired, you need login again" });
+            return next(new AppError("Refresh token expired, you need login again", 403));
         }
         if (!user) {
-            return res.status(403).json({ message: "User not exist" });
+            return next(new AppError("User not exist", 403));
         }
 
         req.user = user;
         return next();
     } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
-            return res.status(403).json({ message: "Token expired, you need login again" });
+            return next(new AppError("Token expired, you need login again", 403));
         }
         if (err instanceof jwt.JsonWebTokenError) {
-            return res.status(401).json({ message: "Invalid token🔴" });
+            return next(new AppError("Invalid token🔴", 401));
         }
-        return res.status(500).json({ message: "Internal server error" });
+        return next(new AppError("Internal server error", 500));
     }
 };

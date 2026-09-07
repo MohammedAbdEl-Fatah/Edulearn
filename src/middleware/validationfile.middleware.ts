@@ -1,5 +1,6 @@
 const { fileTypeFromBuffer } = require("file-type");
 import fs from "fs";
+import { AppError } from "../error/app.error";
 
 // Middleware to validate file type by magic number (file signatures)
 export const fileValidation = async (req: any, res: any, next: any) => {
@@ -13,10 +14,10 @@ export const fileValidation = async (req: any, res: any, next: any) => {
         // validate
         const allowedTypes = ["image/jpeg", "image/png"];
         if (!type || !allowedTypes.includes(type.mime))
-            return next(new Error("Invalid file type"));
+            return next(new AppError("Invalid file type", 400));
 
         return next();
     } catch (error) {
-        return next(new Error("Internal server error"));
+        return next(new AppError("Internal server error", 500));
     }
 };

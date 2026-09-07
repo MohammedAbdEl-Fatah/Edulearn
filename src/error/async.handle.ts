@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 
 //for service
 export const asyncHandleError = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {

@@ -5,18 +5,10 @@ export const isValidationBody =
     (schema: ZodObject) =>
         (req: Request, res: Response, next: NextFunction) => {
 
-            console.log("Middleware start");
-            console.log("Middleware req:", req.body);
             try {
                 schema.parse(req.body);
-
-                console.log("Validation passed");
-
-
-                console.log("Calling next");
                 return next();
             } catch (error) {
-                console.log("Validation failed", error);
                 if (error instanceof ZodError) {
                     return res.status(400).json({
                         message: "Validation failed",
@@ -30,7 +22,7 @@ export const isValidationBody =
                 return next(error);
             }
         };
-        
+
 export const isValidationParams =
     (schema: ZodObject) =>
         (req: Request, res: Response, next: NextFunction) => {
@@ -59,7 +51,7 @@ export const isValidationParams =
             }
         };
 
-        
+
 export const isValidationQuery =
     (schema: ZodObject) =>
         (req: Request, res: Response, next: NextFunction) => {
