@@ -12,6 +12,7 @@ import { userController } from "./modules/user/user.controller";
 import { env } from "./config/env.local";
 import swaggerSpec from "./utils/swagger";
 import { courseController } from "./modules/course/coure.controller";
+import { globalErrorController } from "./middleware/error.middleware";
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -62,4 +63,6 @@ export const bootstrap = (app: Express, express: any): void => {
             console.log(`Server running on port http://localhost:${port}`);
         });
     }
+    //global error controller
+    app.use(globalErrorController);
 }; 
