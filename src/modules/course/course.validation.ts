@@ -1,4 +1,5 @@
 import z from "zod";
+import { CategoryType } from "../../utils/enum";
 
 
 class CourseValidation {
@@ -12,7 +13,7 @@ class CourseValidation {
         description: z.string().min(1, { error: "Description is required" }),
         price: z.number().min(0, { error: "Price must be a positive number" }),
         discount: z.number().min(0, { error: "Discount must be a positive number" }),
-        category: z.string().min(1, { error: "Category is required" }),
+        category: z.enum(CategoryType, { error: "Invalid category. Must be one of beginner, intermediate, advanced." }),
     })
 }
 

@@ -1,15 +1,12 @@
-import { Types } from "mongoose";
-
-
+import { CategoryType } from "../../utils/enum";
 
 export interface CreateCourseDto {
-    instructorId: Types.ObjectId;
     title: string;
     description: string;
     //price and discount
     price: number;
     discount: number;
-    category: string;
+    category: CategoryType;
 }
 
 export interface UpdateCourseDto {
@@ -17,6 +14,6 @@ export interface UpdateCourseDto {
     description?: string;
     price?: number;
     discount?: number;
-    category?: string;
+    category?: CategoryType;
 }
 

@@ -12,3 +12,8 @@ export enum EmailType {
     VERIFY = "verify",
     FORGOT = "forgot",
 }
+export enum CategoryType {
+    BEGINNER = "beginner",
+    INTERMEDIATE = "intermediate",
+    ADVANCED = "advanced",
+}

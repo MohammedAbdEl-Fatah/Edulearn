@@ -6,6 +6,7 @@ import { CreateCourseDto } from "./course.dto";
 import { CourseRepository } from "../../DB/course/course.repository";
 import CourseFactory from "./course.factory";
 import CourseResponse from "./course.reponse";
+import { RoleUSER } from "../../utils/enum";
 
 class CourseService {
     constructor(
@@ -17,9 +18,13 @@ class CourseService {
     public createCourse = async (req: Request, res: Response) => {
         //get data from req
         const createCourseDTO: CreateCourseDto = req.body;
+        //check role user is teacher
+        if (req.user?.role !== RoleUSER.TEACHER) {
+            return res.status(403).json({ message: "forbidden you dont have permission to create course" });
+        }
         //search course by title and instructorId
         const course = await this.courseRepository.getOne(
-            { filter: { title: createCourseDTO.title, instructorId: createCourseDTO.instructorId } });
+            { filter: { title: createCourseDTO.title, instructorId: req.user!.id } });
         //check caourse it exist for user 
         if (course) {
             return res.status(400).json({ message: "Course already exists" });
