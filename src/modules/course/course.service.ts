@@ -18,12 +18,7 @@ class CourseService {
         private readonly responseCourse: CourseResponse
     ) { }
 
-    //private
-    private checkTeacher = (user: any) => {
-        if (user?.role !== RoleUSER.TEACHER) {
-            throw new AppError("forbidden you dont have permission to create course", 403);
-        }
-    }
+
     //create course
     public createCourse = asyncHandleError(async (req: Request, res: Response) => {
         //check role user is teacher
@@ -51,44 +46,98 @@ class CourseService {
         //teacher can edit name course and price or discount 
         //!add field hostiry for discount
         async (req: Request, res: Response) => {
-            this.checkTeacher(req.user);
-            const courseID = courseValidation.checkIDFromParams.safeParse(req.params);
-            if (!courseID.success) {
-                throw new AppError("Invalid course ID", 400);
-            }
-            //cousre is exist by id and check userid is same or not 
-            const course = await this.courseRepository.getOne({ filter: { _id: courseID.data.id } });
-            if (!course) {
-                throw new AppError("Course not found", 404);
-            }
-            if (String(course.instructorId) !== req.user!.id.toString()) {
-                throw new AppError("forbidden you dont have permission to edit this course", 403);
-            }
+            const { courseDB, courseID } = await this.CheckRoleUserAndIdOfCourse(req);
             //last update course 
-            if (Date.now() - course.updatedAt.getTime() < 24 * 60 * 60 * 1000) {
+            if (Date.now() - courseDB.updatedAt.getTime() < 24 * 60 * 60 * 1000) {
                 throw new AppError("Course can be edited only once in 1 day", 400);
             }
             //get data 
             const editCourseDto: editCourseDto = req.body;
             //factory edit data
-            const editCourseData = this.courseFactory.editCourse(editCourseDto, course);
+            const editCourseData = this.courseFactory.editCourse(editCourseDto, courseDB);
             //save to db
-            const courseDB = await this.courseRepository.updateOne({ filter: { _id: courseID.data.id }, projection: { $set: editCourseData } });
+            const courseUpdate = await this.courseRepository.updateOne({ filter: { _id: courseID.data.id }, projection: { $set: editCourseData } });
             //reposne
-            const responseEditCourse = this.responseCourse.editCourseResponse(courseDB);
+            const responseEditCourse = this.responseCourse.editCourseResponse(courseUpdate);
             return res.status(200).json(responseEditCourse);
         }
 
     );
 
-
-
-
-
     //delete course
-    //get course => mean select id from courses
-    //get all courses
+    public deleteCourse = asyncHandleError(
+        async (req: Request, res: Response) => {
+            //check id from pramas and user
+            const { courseID } = await this.CheckRoleUserAndIdOfCourse(req);
+            //dete course 
+            const courseDelete = await this.courseRepository.deleteOne({ filter: { _id: courseID.data.id } });
+            //response
+            const responseDeleteCourse = this.responseCourse.deleteCourseResponse(courseDelete);
+            return res.status(200).json(responseDeleteCourse);
+        });
 
+
+    //get course => mean select id from courses any one can give course id
+    public getCourse = asyncHandleError(
+        async (req: Request, res: Response) => {
+            //check id from pramas and user
+            const courseID = courseValidation.checkIDFromParams.safeParse(req.params);
+            if (!courseID.success) {
+                throw new AppError("Invalid course ID", 400);
+            }
+            //cousre is exist by id and check userid is same or not 
+            const courseDB = await this.courseRepository.getOne({ filter: { _id: courseID.data.id } });
+            if (!courseDB) {
+                throw new AppError("Course not found", 404);
+            }
+            //response
+            const responseGetCourse = this.responseCourse.getCourseResponse(courseDB, courseID.data.id);
+            return res.status(200).json(responseGetCourse);
+        });
+    // get all course for one teacher 
+    public getCoursesTeacher = asyncHandleError(
+        async (req: Request, res: Response) => {
+            //cousre is exist by id and check userid is same or not 
+            const courseDB = await this.courseRepository.getAll({ filter: { instructorId: req.params.id } });
+            //response
+            const responseGetCourse = this.responseCourse.getAllCourseResponse(courseDB);
+            return res.status(200).json(responseGetCourse);
+        });
+
+    //get all courses for student and teacher
+    public getAllCourses = asyncHandleError(
+        async (req: Request, res: Response) => {
+
+            //cousre is exist by id and check userid is same or not 
+            const courseDB = await this.courseRepository.getAll({});
+            //response
+            const responseGetCourse = this.responseCourse.getAllCourseResponse(courseDB);
+            return res.status(200).json(responseGetCourse);
+        });
+
+    //private
+    private checkTeacher = (user: any) => {
+        if (user?.role !== RoleUSER.TEACHER) {
+            throw new AppError("forbidden you dont have permission to create course", 403);
+        }
+    }
+
+    private async CheckRoleUserAndIdOfCourse(req: Request) {
+        this.checkTeacher(req.user);
+        const courseID = courseValidation.checkIDFromParams.safeParse(req.params);
+        if (!courseID.success) {
+            throw new AppError("Invalid course ID", 400);
+        }
+        //cousre is exist by id and check userid is same or not 
+        const courseDB = await this.courseRepository.getOne({ filter: { _id: courseID.data.id } });
+        if (!courseDB) {
+            throw new AppError("Course not found", 404);
+        }
+        if (String(courseDB.instructorId) !== req.user!.id.toString()) {
+            throw new AppError("forbidden you dont have permission to edit this course", 403);
+        }
+        return { courseDB, courseID };
+    }
 }
 
 export default new CourseService(new CourseRepository(), new CourseFactory(), new CourseResponse());

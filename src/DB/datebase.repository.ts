@@ -22,14 +22,14 @@ export abstract class DatabaseRepository<T> {
         return await this.model.findOne(filter, projection, options);
     }
     async getAll({
-        filter,
+        filter = {},
         projection,
         options
     }: {
-        filter: FilterQuery<T>,
+        filter?: FilterQuery<T>,
         projection?: ProjectionType<T>,
         options?: QueryOptions<T>
-    }): Promise<T[]> {
+    } = {}): Promise<T[]> {
         return await this.model.find(filter, projection, options);
     }
     //update write
