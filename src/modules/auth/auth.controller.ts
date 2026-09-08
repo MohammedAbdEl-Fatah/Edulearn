@@ -129,6 +129,19 @@ router.post(
 );
 /**
  * @openapi
+ * /auth/logout:
+ *  post:
+ *     summary: Logout
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
  */
 
 router.patch(
