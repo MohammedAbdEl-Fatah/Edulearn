@@ -60,6 +60,7 @@ export const bootstrap = (app: Express, express: any): void => {
 
     if (process.env.VERCEL !== "1") {
         app.listen(port, () => {
+            console.log(`docmunetion : http://localhost:${port}/api-docs`)
             console.log(`Server running on port http://localhost:${port}`);
         });
     }
