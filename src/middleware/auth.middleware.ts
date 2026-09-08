@@ -88,8 +88,6 @@ export const authMiddleware = async (
 
         const tokenRepo = new TokenRepository();
         const userRepo = new UserRepository();
-        console.log("token", token);
-        console.log("payloadUser.role", payloadUser.role);
 
         const [tokenInDB, user] = await Promise.all([
             tokenRepo.getOne({ filter: { token, role: payloadUser.role } }),
