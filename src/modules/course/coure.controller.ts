@@ -13,3 +13,10 @@ courseController.post(
     authMiddleware,
     CourseService.createCourse
 );
+
+courseController.patch(
+    "/edit-course/:id",
+    authMiddleware,
+    isValidationBody(CourseValidation.editCourse),
+    CourseService.editCourse
+);

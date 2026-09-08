@@ -3,17 +3,15 @@ import { CategoryType } from "../../utils/enum";
 export interface CreateCourseDto {
     title: string;
     description: string;
-    //price and discount
     price: number;
     discount: number;
     category: CategoryType;
 }
 
-export interface UpdateCourseDto {
+export interface editCourseDto {
     title?: string;
     description?: string;
-    price?: number;
+    //only discount can be change 
     discount?: number;
-    category?: CategoryType;
 }
 

@@ -9,5 +9,12 @@ class CourseResponse {
             data,
         };
     }
+    public editCourseResponse(data: ICourse) {
+        return {
+            success: true,
+            message: "Course updated successfully",
+            data,
+        };
+    }
 }
 export default CourseResponse;
