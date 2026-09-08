@@ -28,6 +28,9 @@ export const courseController = Router();
  *               - discount
  *               - category
  *             properties:
+ *               instructorId:
+ *                 type: string
+ *                 example: "6a490103a2602737bbe702d3"
  *               title:
  *                 type: string
  *                 example: "Node.js & TypeScript Masterclass"
