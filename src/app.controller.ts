@@ -13,6 +13,7 @@ import { env } from "./config/env.local";
 import swaggerSpec from "./utils/swagger";
 import { courseController } from "./modules/course/coure.controller";
 import { globalErrorController } from "./middleware/error.middleware";
+import { sessionController } from "./modules/session/session.controller";
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -56,6 +57,7 @@ export const bootstrap = (app: Express, express: any): void => {
     //modules
     app.use("/api/v1/auth", authController);
     app.use("/api/v1/user", userController);
+    app.use("/api/v1/session", sessionController)
     app.use("/api/v1/course", courseController);
 
     if (process.env.VERCEL !== "1") {

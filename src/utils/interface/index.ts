@@ -52,10 +52,10 @@ export interface IReview {
 export interface ISession {
     readonly id: Types.ObjectId;
     courseId: Types.ObjectId;
+    instructorId: Types.ObjectId;
     title: string;
     videos: IVideo[];
     pdfs: IPdf[];
-    duration: number;
     createdAt: Date;
     updatedAt: Date;
 }

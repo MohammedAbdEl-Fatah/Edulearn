@@ -31,9 +31,10 @@ export class MulterService {
         if (!this.videoInstance) {
             this.videoInstance = multer({
                 storage: multer.memoryStorage(),
-                limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
+                limits: { fileSize: 250 * 1024 * 1024 }, // 250 MB
                 fileFilter: (_req, file, cb) => {
-                    if (file.mimetype.startsWith('video/')) {
+                    console.log({ file: file });
+                    if (file.fieldname.startsWith('video')) {
                         cb(null, true);
                     } else {
                         cb(new AppError('Only videos are allowed'));

@@ -1,9 +1,9 @@
-import { IPdf } from "../../utils/interface";
+import { ISession } from "../../utils/interface";
 import { DatabaseRepository } from "../datebase.repository";
-import { pdfModel } from "../pdf/pdf.model";
+import { sessionModel } from "./session.model";
 
-export class SessionRepository extends DatabaseRepository<IPdf> {
+export class SessionRepository extends DatabaseRepository<ISession> {
     constructor() {
-        super(pdfModel);
+        super(sessionModel);
     }
 }
