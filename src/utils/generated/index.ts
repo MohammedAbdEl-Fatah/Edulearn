@@ -23,16 +23,16 @@ export const generatedToken = ({ data, roleSecret, time, tokenType }:
     { data: any, roleSecret: string, time: number | ms.StringValue, tokenType: string }) => {
     if (roleSecret === RoleUSER.STUDENT) {
         if (tokenType === TokenType.ACCESS) {
-            return jwt.sign(data, TokenSecret.secretUserStudentAccessToken, { expiresIn: time = '30m' });
+            return jwt.sign(data, TokenSecret.secretUserStudentAccessToken, { expiresIn: time || '30m' });
         }
-        return jwt.sign(data, TokenSecret.secretUserStudentRefreshToken, { expiresIn: time = '7d' });
+        return jwt.sign(data, TokenSecret.secretUserStudentRefreshToken, { expiresIn: time || '7d' });
     }
 
     if (roleSecret === RoleUSER.TEACHER) {
         if (tokenType === TokenType.ACCESS) {
-            return jwt.sign(data, TokenSecret.secretUserTeacherAccessToken, { expiresIn: time = '30m' });
+            return jwt.sign(data, TokenSecret.secretUserTeacherAccessToken, { expiresIn: time || '30m' });
         }
-        return jwt.sign(data, TokenSecret.secretUserTeacherRefreshToken, { expiresIn: time = '7d' });
+        return jwt.sign(data, TokenSecret.secretUserTeacherRefreshToken, { expiresIn: time || '7d' });
     }
 
     throw new Error('Invalid role');
