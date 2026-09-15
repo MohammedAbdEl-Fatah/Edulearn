@@ -14,6 +14,7 @@ import swaggerSpec from "./utils/swagger";
 import { courseController } from "./modules/course/coure.controller";
 import { globalErrorController } from "./middleware/error.middleware";
 import { sessionController } from "./modules/session/session.controller";
+import { videoController } from "./modules/video/video.controller";
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -57,14 +58,20 @@ export const bootstrap = (app: Express, express: any): void => {
     //modules
     app.use("/api/v1/auth", authController);
     app.use("/api/v1/user", userController);
-    app.use("/api/v1/session", sessionController)
     app.use("/api/v1/course", courseController);
+    app.use("/api/v1/session", sessionController);
+    app.use("/api/v1/video", videoController);
+
 
     if (process.env.VERCEL !== "1") {
-        app.listen(port, () => {
-            console.log(`docmunetion : http://localhost:${port}/api-docs`)
+        const server = app.listen(port, () => {
+            console.log(`docmunetion : http://localhost:${port}/api-docs`);
             console.log(`Server running on port http://localhost:${port}`);
         });
+        // 5 minutes timeout for video/file upload processing
+        server.timeout = 5 * 60 * 1000;
+        server.keepAliveTimeout = 5 * 60 * 1000;
+        server.headersTimeout = 5 * 60 * 1000 + 1000;
     }
     //global error controller
     app.use(globalErrorController);
