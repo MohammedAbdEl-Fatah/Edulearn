@@ -25,12 +25,15 @@ export class CloudinaryService {
     }
 
     // Upload single buffer (Video)
-    public uploadVideo(buffer: Buffer): Promise<UploadApiResponse> {
+    public uploadVideo(buffer: Buffer, dir: string): Promise<UploadApiResponse> {
         return new Promise((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
+            //!!change upload_large_stream to upload_chunked_stream for fix 413 Payload Too Large error in case of upload video 
+            const stream = cloudinary.uploader.upload_chunked_stream(
                 {
                     resource_type: 'video',
-                    folder: 'videos',
+                    folder: dir,
+                    chunk_size: 25 * 1024 * 1024, // 25 MB chunks
+                    timeout: 600000, // 10 minutes timeout for Cloudinary upload
                 },
                 (error, result) => {
                     if (error || !result) return reject(error);
@@ -56,10 +59,10 @@ export class CloudinaryService {
     }
 
     // Upload multiple video buffers concurrently
-    public async uploadVideos(files: Buffer[]) {
+    public async uploadVideos(files: Buffer[], dir: string) {
         return Promise.all(
             files.map(async (file) => {
-                const result = await this.uploadVideo(file);
+                const result = await this.uploadVideo(file, dir);
                 return {
                     secure_url: result.secure_url,
                     public_id: result.public_id,
