@@ -31,9 +31,8 @@ export class MulterService {
         if (!this.videoInstance) {
             this.videoInstance = multer({
                 storage: multer.memoryStorage(),
-                limits: { fileSize: 250 * 1024 * 1024 }, // 250 MB
+                limits: { fileSize: 100 * 1024 * 1024 }, // 100MB 
                 fileFilter: (_req, file, cb) => {
-                    console.log({ file: file });
                     if (file.fieldname.startsWith('video')) {
                         cb(null, true);
                     } else {
@@ -62,6 +61,7 @@ export class MulterService {
     }
 
     public static arrayVideo(field: string, maxCount?: number) {
+
         return this.video().array(field, maxCount);
     }
 
