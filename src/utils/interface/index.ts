@@ -61,11 +61,17 @@ export interface ISession {
 }
 
 export interface IVideo {
-    readonly id: Types.ObjectId;
+    readonly id?: Types.ObjectId;
     sessionId: Types.ObjectId;
     title: string;
     url: string;
     order: number;
+    publicId: string;
+    resourceType: string;
+    format: string;
+    size: string;
+    duration: number;
+    instructorId: Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }
