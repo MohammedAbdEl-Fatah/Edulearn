@@ -17,7 +17,7 @@ export class VideoFactory {
                   title: originalname,
                   url: item.secure_url,
                   order: order,
-                  publicId: item.asset_id,
+                  publicId: item.public_id,
                   resourceType: item.resource_type,
                   format: item.format,
                   size: (item.bytes / 1024 / 1024).toFixed(2) + "MB",// as like 28MB || 34MB

@@ -20,4 +20,26 @@ videoController.post(
       allowRoles(RoleUSER.TEACHER),
       MulterService.arrayVideo("videos", 10),
       videoService.uploadVideo
-)
+);
+
+
+videoController.delete("/delete-video/:id/:idvideo",
+      authMiddleware,
+      allowRoles(RoleUSER.TEACHER),
+      videoService.deleteVideo);
+videoController.get("/get-all-video/:id",
+      authMiddleware,
+      allowRoles(RoleUSER.TEACHER),
+      videoService.getAllVideo);
+
+videoController.get("get-video/:id/:idvideo",
+      authMiddleware,
+      allowRoles(RoleUSER.TEACHER),
+      videoService.getOneVideo
+);
+//TODO:: test when has differcent 2 teacher and test more has many video 10+ test 
+videoController.patch(":id/reorder",
+      authMiddleware,
+      allowRoles(RoleUSER.TEACHER),
+      videoService.reorderVideos
+);
