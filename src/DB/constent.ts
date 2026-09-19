@@ -4,5 +4,5 @@ export enum ConstentModel {
     SESSION = "Session",
     REVIEW = "Review",
     VIDEO = "Video",
-    PDF = "Pdf",
+    FILE = "File",
 }

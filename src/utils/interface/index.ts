@@ -55,7 +55,7 @@ export interface ISession {
     instructorId: Types.ObjectId;
     title: string;
     videos: IVideo[];
-    pdfs: IPdf[];
+    pdfs: IFile[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -76,7 +76,7 @@ export interface IVideo {
     updatedAt: Date;
 }
 
-export interface IPdf {
+export interface IFile {
     readonly id: Types.ObjectId;
     sessionId: Types.ObjectId;
     title: string;

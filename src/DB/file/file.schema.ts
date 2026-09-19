@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
-import { IPdf } from "../../utils/interface";
+import { IFile } from "../../utils/interface";
 
-export const pdfSchema = new Schema<IPdf>({
+export const fileSchema = new Schema<IFile>({
     sessionId: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, required: true },
     url: { type: String, required: true },
