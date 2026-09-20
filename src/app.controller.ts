@@ -15,6 +15,7 @@ import { courseController } from "./modules/course/coure.controller";
 import { globalErrorController } from "./middleware/error.middleware";
 import { sessionController } from "./modules/session/session.controller";
 import { videoController } from "./modules/video/video.controller";
+import fileController from "./modules/file/file.controller";
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -61,6 +62,7 @@ export const bootstrap = (app: Express, express: any): void => {
     app.use("/api/v1/course", courseController);
     app.use("/api/v1/session", sessionController);
     app.use("/api/v1/video", videoController);
+    app.use("/api/v1/file", fileController);
 
 
     if (process.env.VERCEL !== "1") {
