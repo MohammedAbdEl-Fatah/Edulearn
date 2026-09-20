@@ -42,7 +42,7 @@ class FileService {
                   //saving DB 
                   const fileInDb = await this.fileRepo.create(createdFile as IFile);
                   //reposne
-                  res.json({
+                  res.status(201).json({
                         success: true,
                         message: "File created successfully",
                         data: fileInDb
@@ -62,6 +62,49 @@ class FileService {
             return lastVideo ? lastVideo.order + 1 : 0;
       }
       //replace file by id => remove old file and build new file for all role with cheak owner
+      public replaceFile = asyncHandleError(
+            async (req: Request, res: Response, next: NextFunction) => {
+                  //id session owner
+                  const id = req.params.id;//file id
+                  const userID = req.user!.id;
+                  const fileUser = req.file;
+                  if (!id) throw new AppError("Id is required", 400);
+                  //title file is not exist 
+                  const fileDB = await this.fileRepo.getOne({ filter: { _id: id, userId: userID } });
+                  //cheak owner
+                  if (!fileDB) throw new AppError("File is not exist", 404);
+                  const exist = await this.fileRepo.getOne({ filter: { title: fileUser?.originalname, userId: userID, _id: { $ne: id } } });
+                  if (exist) {
+                        throw new AppError("This file is already exist,if you want to upload again please replace the file", 400);
+                  }
+                  const folder = `edulearn/${userID}/file/${fileDB.sessionId}`
+                  const deleteFile = await this.cloudinaryService.deleteFile(fileDB.publicId, fileDB.resourceType);
+                  if (!deleteFile) {
+                        throw new AppError("Failed to delete file", 500);
+                  }
+                  const uploadFile: UploadApiResponse = await this.cloudinaryService.uploadFile(fileUser!, folder);
+                  console.log(uploadFile);
+
+                  //replace file 
+                  await this.fileRepo.updateOne({
+                        filter: { _id: id, userId: userID },
+                        projection: {
+                              $set: {
+                                    url: uploadFile.url,
+                                    publicId: uploadFile.public_id,
+                                    title: fileUser!.originalname
+                              }
+                        },
+                  });
+                  // replace url in db
+                  const fileReplaced = this.fileFactory.replaceFile(uploadFile, fileDB, fileUser!.originalname);
+                  res.status(200).json({
+                        success: true,
+                        message: "File replaced successfully",
+                        data: fileReplaced
+                  });
+            }
+      )
       //create pdf from student => assenment 
       //get all assnenment student 
       //post result assenment from teacher for stendent status [wait - result - rebuild ]

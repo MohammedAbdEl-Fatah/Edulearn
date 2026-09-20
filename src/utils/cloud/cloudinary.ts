@@ -73,8 +73,8 @@ export class CloudinaryService {
     }
 
     // Delete single file/video
-    public deleteFile(public_id: string) {
-        return cloudinary.uploader.destroy(public_id);
+    public deleteFile(public_id: string, resourceType: string) {
+        return cloudinary.uploader.destroy(public_id, { resource_type: resourceType });
     }
 
     public deleteVideo(public_id: string) {

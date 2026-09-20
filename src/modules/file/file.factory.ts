@@ -16,5 +16,18 @@ class FileFactory {
                   updatedAt: new Date(),
             }
       }
+      public replaceFile(item: UploadApiResponse, oldIteam: IFile, title: string): Partial<IFile> {
+            return {
+                  sessionId: oldIteam.sessionId,
+                  userId: oldIteam.userId,
+                  title,
+                  url: item.url,
+                  publicId: item.public_id,
+                  resourceType: item.resource_type,
+                  order: oldIteam.order,
+                  createdAt: oldIteam.createdAt,
+                  updatedAt: new Date(),
+            }
+      }
 }
 export default FileFactory;
