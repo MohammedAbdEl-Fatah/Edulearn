@@ -79,8 +79,11 @@ export interface IVideo {
 export interface IFile {
     readonly id: Types.ObjectId;
     sessionId: Types.ObjectId;
+    userId: Types.ObjectId;
     title: string;
     url: string;
+    publicId: string;
+    resourceType: string;
     order: number;
     createdAt: Date;
     updatedAt: Date;
