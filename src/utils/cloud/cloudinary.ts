@@ -19,9 +19,10 @@ export class CloudinaryService {
         return CloudinaryService.instance;
     }
 
-    // Upload single file (URL/Base64/FilePath)
-    public uploadFile(file: string): Promise<UploadApiResponse> {
-        return cloudinary.uploader.upload(file);
+    // Upload single file (URL/Base64/FilePath/Buffer)
+    public uploadFile(file: Express.Multer.File, dir: string): Promise<UploadApiResponse> {
+        const fileData = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+        return cloudinary.uploader.upload(fileData, { folder: dir, resource_type: 'auto' });
     }
 
     // Upload single buffer (Video)
@@ -46,10 +47,10 @@ export class CloudinaryService {
     }
 
     // Upload multiple files concurrently
-    public async uploadFiles(files: string[]) {
+    public async uploadFiles(files: Express.Multer.File[], dir: string) {
         return Promise.all(
             files.map(async (file) => {
-                const result = await this.uploadFile(file);
+                const result = await this.uploadFile(file, dir);
                 return {
                     secure_url: result.secure_url,
                     public_id: result.public_id,
