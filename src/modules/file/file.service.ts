@@ -60,7 +60,7 @@ class FileService {
             });
 
             return lastVideo ? lastVideo.order + 1 : 0;
-      }
+      };
       //replace file by id => remove old file and build new file for all role with cheak owner
       public replaceFile = asyncHandleError(
             async (req: Request, res: Response, next: NextFunction) => {
@@ -104,12 +104,41 @@ class FileService {
                         data: fileReplaced
                   });
             }
-      )
-      //create pdf from student => assenment 
-      //get all assnenment student 
+      );
       //post result assenment from teacher for stendent status [wait - result - rebuild ]
-      //get correst from teacher 
       // delete pdf 
+      public deleteFile = asyncHandleError(
+            async (req: Request, res: Response, next: NextFunction) => {
+                  //id session owner
+                  const id = req.params.id;//file id
+                  const userID = req.user!.id;
+                  if (!id) throw new AppError("Id is required", 400);
+                  //title file is not exist 
+                  const fileDB = await this.fileRepo.getOne({ filter: { _id: id, userId: userID } });
+                  //cheak owner
+                  if (!fileDB) throw new AppError("File is not exist", 404);
+
+                  const deleteFile = await this.cloudinaryService.deleteFile(fileDB.publicId, fileDB.resourceType);
+                  if (!deleteFile) {
+                        throw new AppError("Failed to delete file", 500);
+                  }
+
+                  await this.fileRepo.deleteOne({
+                        filter: { _id: id, userId: userID }, options: {}
+                  })
+                  res.status(200).json({
+                        success: true,
+                        message: "File deleted successfully",
+                  });
+            }
+      );
+
+
+
+      //!all student what do in session 
+      //get all assnenment student 
+      //create pdf from student => assenment 
+      //get correst from teacher 
 
 }
 export default new FileService(new FileRepository(),

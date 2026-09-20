@@ -15,7 +15,10 @@ fileController.put("/replace/:id",
       MulterService.singleFile("file"),
       fileService.replaceFile);
 
-
+fileController.delete("/delete/:id",
+      authMiddleware,
+      allowRoles(RoleUSER.TEACHER),
+      fileService.deleteFile);
 
 
 export default fileController;
