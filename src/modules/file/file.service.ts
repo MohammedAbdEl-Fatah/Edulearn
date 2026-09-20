@@ -105,7 +105,7 @@ class FileService {
                   });
             }
       );
-      //post result assenment from teacher for stendent status [wait - result - rebuild ]
+      //!post result assenment from teacher for stendent status [wait - result - rebuild ]
       // delete pdf 
       public deleteFile = asyncHandleError(
             async (req: Request, res: Response, next: NextFunction) => {

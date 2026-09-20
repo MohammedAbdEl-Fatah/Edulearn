@@ -14,6 +14,7 @@ import { EmailType, RoleUSER } from "../../utils/enum";
 import { TokenRepository } from "../../DB/token/token.repository";
 import { verifyToken } from "../../middleware/auth.middleware";
 import { TokenSecret } from "../../utils/generated";
+import { asyncHandleError } from "../../error/async.handle";
 class AuthenticationService {
     constructor(
         private readonly authFactory: typeof AuthFactory,
@@ -52,8 +53,7 @@ class AuthenticationService {
 
 
     //Sign Up student
-    public signUpStudent = async (req: Request, res: Response) => {
-        console.log("body:", req.body);
+    public signUpStudent = asyncHandleError(async (req: Request, res: Response) => {
         const reqestBodyDTO: AuthDTO.SignUpStudentDTO = req.body;
 
         if (!reqestBodyDTO.email) {
@@ -70,7 +70,6 @@ class AuthenticationService {
                 message: "User already exists"
             });
         }
-        //TODO validation 
         if (reqestBodyDTO.confirmPassword !== reqestBodyDTO.password) {
             return res.status(400).json({
                 success: false,
@@ -91,55 +90,56 @@ class AuthenticationService {
         });
 
         return res.status(201).json(userResponse);
-    }
+    });
     //Sign Up teacher 
-    public signUpTeacher = async (req: Request, res: Response) => {
-        const reqestBodyDTO: AuthDTO.SignUpTeacherDTO = req.body;
+    public signUpTeacher = asyncHandleError(
+        async (req: Request, res: Response) => {
+            const reqestBodyDTO: AuthDTO.SignUpTeacherDTO = req.body;
 
-        if (!reqestBodyDTO.email) {
-            return res.status(400).json({
-                success: false,
-                message: "Email is required"
-            });
-        }
+            if (!reqestBodyDTO.email) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Email is required"
+                });
+            }
 
-        const userExaite = await this.userRepository.getOne({ filter: { email: reqestBodyDTO.email } });
-        if (userExaite) {
-            return res.status(400).json({
-                success: false,
-                message: "User already exists"
-            });
-        }
-        //TODO validation 
-        if (reqestBodyDTO.confirmPassword !== reqestBodyDTO.password) {
-            return res.status(400).json({
-                success: false,
-                message: "Password and confirm password do not match"
-            });
-        }
-        //factory
-        const teacherFactory: Omit<IUser, "id"> = await this.authFactory.signUpTeacher(reqestBodyDTO);
-        //saving to DB
-        const user = await this.userRepository.create(teacherFactory as IUser);
+            const userExaite = await this.userRepository.getOne({ filter: { email: reqestBodyDTO.email } });
+            if (userExaite) {
+                return res.status(400).json({
+                    success: false,
+                    message: "User already exists"
+                });
+            }
+            //TODO validation 
+            if (reqestBodyDTO.confirmPassword !== reqestBodyDTO.password) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Password and confirm password do not match"
+                });
+            }
+            //factory
+            const teacherFactory: Omit<IUser, "id"> = await this.authFactory.signUpTeacher(reqestBodyDTO);
+            //saving to DB
+            const user = await this.userRepository.create(teacherFactory as IUser);
 
-        const userResponse = this.authResponse.signUpTeacherResponse(user);
-        await this.sendMaillerVerify({
-            type: EmailType.VERIFY,
-            email: user.email,
-            otp: decryptValue(user.otp),
-            otpExpires: user.otpExpires
+            const userResponse = this.authResponse.signUpTeacherResponse(user);
+            await this.sendMaillerVerify({
+                type: EmailType.VERIFY,
+                email: user.email,
+                otp: decryptValue(user.otp),
+                otpExpires: user.otpExpires
+            });
+
+            return res.status(201).json(userResponse);
+
         });
 
-        return res.status(201).json(userResponse);
 
-    };
-
-
-    //Sign up Student with Google
-    //Sign up Teacher with Google
+    //TODO Sign up Student with Google
+    //TODO Sign up Teacher with Google
 
     //confrim Email Student or Teacher 
-    public confirmEmail = async (req: Request, res: Response) => {
+    public confirmEmail = asyncHandleError(async (req: Request, res: Response) => {
         const confirmOtpDTO: AuthDTO.ConfirmOtpDTO = req.body;
         //* more scures - check from db include value or throw error if not found
         //email exist 
@@ -203,18 +203,18 @@ class AuthenticationService {
         //response
         const response = this.authResponse.confirmOtpResponse();
         return res.status(200).json(response);
-    }
+    });
 
     //Login for student or teacher 
-    public login = async (req: Request, res: Response) => {
+    public login = asyncHandleError(async (req: Request, res: Response) => {
         //DTO login {email / password }
         const loginDTO: AuthDTO.LoginDTO = req.body;
-        console.log({loginDTO});
+        console.log({ loginDTO });
         // check email exist
         const exist = await this.userRepository.getOne({ filter: { email: loginDTO.email } });
         // emails is verify 
-        console.log({exist});
-        
+        console.log({ exist });
+
         if (!exist) {
             return res.status(404).json({
                 success: false,
@@ -241,10 +241,10 @@ class AuthenticationService {
         } as any);
         // response    
         return res.status(200).json(this.authResponse.loginResponse(token));
-    }
+    });
 
     //generated otp for forget password
-    public generateOtpForForgetPassword = async (
+    public generateOtpForForgetPassword = asyncHandleError(async (
         req: Request, res: Response
     ) => {
         //email is exist or not and confirm 
@@ -275,10 +275,10 @@ class AuthenticationService {
             success: true,
             message: "OTP generated successfully"
         });
-    };
+    });
     //Forget Password 
 
-    public forgetPassword = async (
+    public forgetPassword = asyncHandleError(async (
         req: Request, res: Response
     ) => {
         // email is exist or not and confirm
@@ -317,12 +317,12 @@ class AuthenticationService {
             success: true,
             message: "Password updated successfully"
         });
-    };
+    });
 
 
 
     // refresh Token Role
-    public refreshToken = async (
+    public refreshToken = asyncHandleError(async (
         req: Request, res: Response
     ) => {
         // no there middleware 
@@ -390,9 +390,9 @@ class AuthenticationService {
             message: "Refresh token successful",
             token: newToken
         });
-    };
+    });
     // Logout with revoke token 
-    public logOut = async (req: Request, res: Response) => {
+    public logOut = asyncHandleError(async (req: Request, res: Response) => {
 
         //TODO think about revoke token time to cronJob???
         const revokeToken = req.headers.authorization?.split(" ")[1];
@@ -405,7 +405,7 @@ class AuthenticationService {
             message: "Logout successful"
         });
         //TODO cronJob delete Token is revoked or expire Token
-    };
+    });
 }
 
 

@@ -1,6 +1,3 @@
-
-
-
 import { Request, Response } from "express";
 import { CreateCourseDto, editCourseDto as editCourseDto } from "./course.dto";
 import { CourseRepository } from "../../DB/course/course.repository";
