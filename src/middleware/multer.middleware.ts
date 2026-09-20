@@ -2,14 +2,14 @@ import multer from "multer";
 import { AppError } from "../error/app.error";
 
 export class MulterService {
-    private static imageInstance: multer.Multer;
+    private static fileInstance: multer.Multer;
     private static videoInstance: multer.Multer;
 
     private constructor() { }
 
     private static file() {
-        if (!this.imageInstance) {
-            this.imageInstance = multer({
+        if (!this.fileInstance) {
+            this.fileInstance = multer({
                 storage: multer.memoryStorage(),
                 limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
                 fileFilter: (_req, file, cb) => {
@@ -24,7 +24,7 @@ export class MulterService {
                 },
             });
         }
-        return this.imageInstance;
+        return this.fileInstance;
     }
 
     private static video() {
@@ -44,15 +44,15 @@ export class MulterService {
         return this.videoInstance;
     }
 
-    public static singleImage(field: string) {
+    public static singleFile(field: string) {
         return this.file().single(field);
     }
 
-    public static arrayImage(field: string, maxCount?: number) {
+    public static arrayFile(field: string, maxCount?: number) {
         return this.file().array(field, maxCount);
     }
 
-    public static fieldsImages(fields: { name: string; maxCount?: number }[]) {
+    public static fieldsFile(fields: { name: string; maxCount?: number }[]) {
         return this.file().fields(fields);
     }
 
