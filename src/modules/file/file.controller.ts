@@ -7,7 +7,8 @@ import { RoleUSER } from "../../utils/enum";
 const fileController = Router()
 fileController.post("/upload/:id", authMiddleware, allowRoles(RoleUSER.TEACHER),
       MulterService.singleFile("file"), fileService.createFile);
-
+fileController.post("/submit-assignment/:id/:idAssenment", authMiddleware, allowRoles(RoleUSER.STUDENT),
+      MulterService.singleFile("file"), fileService.submitAssenment);
 
 fileController.put("/replace/:id",
       authMiddleware,

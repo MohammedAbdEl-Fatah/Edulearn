@@ -6,7 +6,8 @@ import { AppError } from "../../error/app.error";
 import { UploadApiResponse } from "cloudinary";
 import fileFactory from "./file.factory";
 import { IFile } from "../../utils/interface";
-import { RoleUSER } from "../../utils/enum";
+import { RoleUSER, TypeAssenment } from "../../utils/enum";
+import { Types } from "mongoose";
 
 class FileService {
 
@@ -21,6 +22,8 @@ class FileService {
                   const userId = req.user!.id;
                   const sessionId = req.params.id;
                   const fileUser = req.file;
+                  const typeAssenment = req.body.typeAssenment;
+
                   if (!sessionId) {
                         throw new AppError("Session is required", 400);
                   }
@@ -39,7 +42,7 @@ class FileService {
                   let nextOrder =
                         await this.getNextOrder(sessionId.toString());
                   //factory
-                  const createdFile = this.fileFactory.createFile(userId, sessionId.toString(), uploadFile, fileUser.originalname, nextOrder);
+                  const createdFile = this.fileFactory.createFile(userId, sessionId.toString(), uploadFile, fileUser.originalname, nextOrder, typeAssenment);
                   //saving DB 
                   const fileInDb = await this.fileRepo.create(createdFile as IFile);
                   //reposne
@@ -165,6 +168,50 @@ class FileService {
             }
       );
       //create pdf from student => assenment 
+      public submitAssenment = asyncHandleError(
+            async (req: Request, res: Response, next: NextFunction) => {
+                  const userId = req.user!.id; // id student
+                  const SessionID = req.params.id;// id file assenment
+                  const assenmentId = req.params.idAssenment;// id file assenment
+                  const fileUser = req.file;
+                  if (!SessionID) {
+                        throw new AppError("session id or id assenment is required", 400);
+                  }
+                  if (!fileUser) {
+
+                        throw new AppError("File is required", 400);
+                  }
+                  const existName = await this.fileRepo.getOne({ filter: { title: fileUser?.originalname, userId: userId } })//user is owner of files
+                  if (existName) {
+                        throw new AppError("This file is already exist,if you want to upload again please replace the file");
+                  }
+
+                  const folder = `edulearn/${userId}/file/${SessionID}`
+                  //file in  cloud
+                  const uploadFile: UploadApiResponse = await this.cloudinaryService.uploadFile(fileUser, folder);
+                  let nextOrder =
+                        await this.getNextOrder(SessionID.toString());
+                  //factory
+                  const createdFile = this.fileFactory.createFile(
+                        userId,
+                        SessionID.toString(),
+                        uploadFile,
+                        fileUser.originalname,
+                        nextOrder,
+                        TypeAssenment.ANSWERASSIGNMENT,
+                        assenmentId as unknown as Types.ObjectId);
+                  //saving DB 
+                  const fileInDb = await this.fileRepo.create(createdFile as IFile);
+                  //reposne
+                  res.status(201).json({
+                        success: true,
+                        message: "File created successfully",
+                        data: fileInDb
+                  });
+            }
+
+
+      );
       //get correst from teacher 
 
 }
