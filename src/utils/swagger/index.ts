@@ -1,4 +1,5 @@
 import swaggerJSDoc from "swagger-jsdoc";
+import path from 'path';
 import { env } from "../../config/env.local";
 
 const port: number = parseInt(env.PORT || "8000");
@@ -27,7 +28,8 @@ const options: swaggerJSDoc.Options = {
             },
         },
     },
-    apis: ["./src/modules/**/*/*.controller.ts"],
+    apis: [
+        path.join(__dirname, '../modules/**/*.controller.{ts,js}'),],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
