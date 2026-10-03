@@ -40,7 +40,7 @@ export const bootstrap = (app: Express, express: any): void => {
         helmet(),
     );
 
-    app.use("/api-docs", swaggerUIExpress.serve, swaggerUIExpress.setup(swaggerSpec, { customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.29.1/swagger-ui.js" }));
+    app.use("/api-docs", swaggerUIExpress.serve, swaggerUIExpress.setup(swaggerSpec, { customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css" }));
     app.use("/api-docs.json", (_, res) => res.json(swaggerSpec));
 
     app.use(async (_req, res, next) => {
