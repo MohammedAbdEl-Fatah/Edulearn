@@ -22,8 +22,10 @@ class FileService {
                   const userId = req.user!.id;
                   const sessionId = req.params.id;
                   const fileUser = req.file;
-                  const typeAssenment = req.body.typeAssenment;
-
+                  const typeAssenment: TypeAssenment = req.body.typeAssenment;
+                  if (!Object.values(TypeAssenment).includes(typeAssenment)) {
+                        throw new AppError("Invalid type of file", 400);
+                  }
                   if (!sessionId) {
                         throw new AppError("Session is required", 400);
                   }
@@ -36,7 +38,7 @@ class FileService {
                         throw new AppError("This file is already exist,if you want to upload again please replace the file");
                   }
 
-                  const folder = `edulearn/${userId}/file/${sessionId}`
+                  const folder = `edulearn/${userId}/file/${typeAssenment}/${sessionId}`
                   //file in  cloud
                   const uploadFile: UploadApiResponse = await this.cloudinaryService.uploadFile(fileUser, folder);
                   let nextOrder =
@@ -142,11 +144,12 @@ class FileService {
                   const id = req.params.id; //id file assignment
 
                   const files = await this.fileRepo.getAll({
-                        filter: { _id: id, },
+                        filter: { presentId: id, typeAssenment: TypeAssenment.ANSWERASSIGNMENT },
                         options: {
                               sort: {
                                     createdAt: -1
                               },
+
                         }
                   });
                   if (!files) {
@@ -168,7 +171,7 @@ class FileService {
                   const id = req.params.id;
                   const result: { grade: number, feedback: string } = req.body;
                   if (!id) throw new AppError("Id is required", 400);
-                  const fileDB = await this.fileRepo.getOne({ filter: { _id: id } });
+                  const fileDB = await this.fileRepo.getOne({ filter: { _id: id, typeAssenment: TypeAssenment.ANSWERASSIGNMENT } });
                   //cheak owner
                   if (!fileDB) throw new AppError("File is not exist", 404);
                   await this.fileRepo.updateOne({ filter: { _id: id }, projection: { $set: { grade: result.grade, feedback: result.feedback, status: TypeAssenment.CORRECTED, updatedAt: Date.now() } } });
@@ -186,7 +189,6 @@ class FileService {
       //get all assnenment student 
       public getAllfilesSession = asyncHandleError(
             async (req: Request, res: Response, next: NextFunction) => {
-                  // const userId = req.user!.id;//id student
                   const teacherId = req.params.teacherId;//id teacher
                   const sessionId = req.params.id;//id session 
                   //todo::payment  => check student has course from teacher in DB of Payment 
@@ -229,7 +231,7 @@ class FileService {
                         throw new AppError("This file is already exist,if you want to upload again please replace the file");
                   }
 
-                  const folder = `edulearn/${userId}/file/${SessionID}`
+                  const folder = `edulearn/${userId}/file/assignment-answer/${SessionID}`
                   //file in  cloud
                   const uploadFile: UploadApiResponse = await this.cloudinaryService.uploadFile(fileUser, folder);
                   let nextOrder =
