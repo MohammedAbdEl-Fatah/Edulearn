@@ -39,5 +39,22 @@ class FileFactory {
                   updatedAt: new Date(),
             }
       }
+
+      public correctResult(result: { grade: number, feedback: string }, oldIteam: IFile): Partial<IFile> {
+            return {
+                  sessionId: oldIteam.sessionId,
+                  userId: oldIteam.userId,
+                  presentId: oldIteam.presentId,
+                  title: oldIteam.title,
+                  url: oldIteam.url,
+                  publicId: oldIteam.publicId,
+                  resourceType: oldIteam.resourceType,
+                  order: oldIteam.order,
+                  createdAt: oldIteam.createdAt,
+                  updatedAt: new Date(),
+                  grade: result.grade,
+                  feedback: result.feedback,
+            }
+      }
 }
 export default FileFactory;

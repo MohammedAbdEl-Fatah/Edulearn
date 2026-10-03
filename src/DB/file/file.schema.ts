@@ -11,5 +11,7 @@ export const fileSchema = new Schema<IFile>({
     publicId: { type: String, required: true },
     resourceType: { type: String, required: true },
     order: { type: Number, required: true },
-    typeAssenment: { type: String, enum: TypeAssenment }
+    typeAssenment: { type: String, enum: TypeAssenment },
+    grade: { type: Number, },
+    feedback: { type: String, }
 }, { timestamps: true, versionKey: false })

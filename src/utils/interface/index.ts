@@ -88,6 +88,8 @@ export interface IFile {
     resourceType: string;
     order: number;
     typeAssenment: TypeAssenment;
+    grade?: number | undefined;
+    feedback?: string | undefined;
     createdAt: Date;
     updatedAt: Date;
 }

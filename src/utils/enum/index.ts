@@ -22,4 +22,5 @@ export enum TypeAssenment {
     QUIZ = "quiz",
     ASSIGNMENT = "assignment",
     ANSWERASSIGNMENT = "answerAssignment",
+    CORRECTED = "corrected"
 }

@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import { asyncHandleError } from "../../error/async.handle";
-import { FileRepository } from "../../DB/file/file.repository";
-import { CloudinaryService } from "../../utils/cloud/cloudinary";
-import { AppError } from "../../error/app.error";
 import { UploadApiResponse } from "cloudinary";
-import fileFactory from "./file.factory";
-import { IFile } from "../../utils/interface";
-import { RoleUSER, TypeAssenment } from "../../utils/enum";
+import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
+import { FileRepository } from "../../DB/file/file.repository";
+import { AppError } from "../../error/app.error";
+import { asyncHandleError } from "../../error/async.handle";
+import { CloudinaryService } from "../../utils/cloud/cloudinary";
+import { RoleUSER, TypeAssenment } from "../../utils/enum";
+import { IFile } from "../../utils/interface";
+import fileFactory from "./file.factory";
 
 class FileService {
 
@@ -159,6 +159,27 @@ class FileService {
                   });
             }
       );
+      // correst assignment for student
+      public correstAsssignment = asyncHandleError(
+            async (
+                  req: Request, res: Response, next: NextFunction
+            ) => {
+                  //id file student 
+                  const id = req.params.id;
+                  const result: { grade: number, feedback: string } = req.body;
+                  if (!id) throw new AppError("Id is required", 400);
+                  const fileDB = await this.fileRepo.getOne({ filter: { _id: id } });
+                  //cheak owner
+                  if (!fileDB) throw new AppError("File is not exist", 404);
+                  await this.fileRepo.updateOne({ filter: { _id: id }, projection: { $set: { grade: result.grade, feedback: result.feedback, status: TypeAssenment.CORRECTED, updatedAt: Date.now() } } });
+                  const updatedfile = this.fileFactory.correctResult(result, fileDB);//for response
+                  res.status(200).json({
+                        success: true,
+                        message: "File corrected successfully",
+                        data: updatedfile
+                  });
+            }
+      );
 
 
       //!all student what do in session 
@@ -235,6 +256,25 @@ class FileService {
 
       );
       //get correst from teacher 
+      public getCorrestFile = asyncHandleError(
+            async (req: Request, res: Response, next: NextFunction) => {
+                  const id = req.params.id;
+                  const userID = req.user!.id;
+                  if (!id) throw new AppError("Id is required", 400);
+                  const fileDB = await this.fileRepo.getOne({ filter: { _id: id, userId: userID }, projection: {} });
+                  if (!fileDB) throw new AppError("File is not exist", 404);
+                  res.status(200).json({
+                        success: true,
+                        message: "File fetched successfully",
+                        data: {
+                              id: fileDB.id,
+                              url: fileDB.url,
+                              grade: fileDB.grade,
+                              feedback: fileDB.feedback,
+                        }
+                  })
+            }
+      );
 
 }
 export default new FileService(new FileRepository(),
