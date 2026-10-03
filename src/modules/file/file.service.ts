@@ -136,7 +136,29 @@ class FileService {
                   });
             }
       );
+      //teacher get all submit assignment
+      public getAllsubmitAssignment = asyncHandleError(
+            async (req: Request, res: Response, next: NextFunction) => {
+                  const id = req.params.id; //id file assignment
 
+                  const files = await this.fileRepo.getAll({
+                        filter: { _id: id, },
+                        options: {
+                              sort: {
+                                    createdAt: -1
+                              },
+                        }
+                  });
+                  if (!files) {
+                        throw new AppError("Files not found", 404);
+                  }
+                  res.status(200).json({
+                        success: true,
+                        message: "Files fetched successfully",
+                        data: files
+                  });
+            }
+      );
 
 
       //!all student what do in session 

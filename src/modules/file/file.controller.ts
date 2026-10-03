@@ -20,6 +20,6 @@ fileController.delete("/delete/:id",
       authMiddleware,
       allowRoles(RoleUSER.TEACHER),
       fileService.deleteFile);
-
-fileController.get("/get-files-session/:teacherId/:id", authMiddleware, allowRoles(RoleUSER.STUDENT, RoleUSER.TEACHER), fileService.getAllfilesSession)
+fileController.get("/get-all-submit-assignment/:id", authMiddleware, allowRoles(RoleUSER.TEACHER), fileService.getAllsubmitAssignment);
+fileController.get("/get-files-session/:teacherId/:id", authMiddleware, allowRoles(RoleUSER.STUDENT, RoleUSER.TEACHER), fileService.getAllfilesSession);
 export default fileController;
