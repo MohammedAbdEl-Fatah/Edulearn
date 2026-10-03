@@ -39,15 +39,23 @@ export const bootstrap = (app: Express, express: any): void => {
         limiter,
         helmet(),
     );
+    const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css";
     const JS_URL = [
         "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js",
         "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js"
     ];
-    app.use("/api-docs", swaggerUIExpress.serve, swaggerUIExpress.setup(swaggerSpec,
-        {
-            customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css",
-            customJs: JS_URL
-        }));
+
+    app.use(
+        "/api-docs",
+        swaggerUIExpress.serveFiles(swaggerSpec, {
+            customCssUrl: CSS_URL,
+            customJs: JS_URL,
+        }),
+        swaggerUIExpress.setup(swaggerSpec, {
+            customCssUrl: CSS_URL,
+            customJs: JS_URL,
+        })
+    );
     app.use("/api-docs.json", (_, res) => res.json(swaggerSpec));
 
     app.use(async (_req, res, next) => {
