@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { RoleUSER, TypeAssenment } from "../enum";
 
 export interface IUser {
     readonly id: Types.ObjectId;
@@ -6,7 +7,7 @@ export interface IUser {
     lastName: string;
     email: string;
     password: string;
-    role: string;
+    role: RoleUSER;
     dob: Date;
     phone: string;
     isVerified: boolean;
@@ -17,9 +18,9 @@ export interface IUser {
     subjectCourse?: string[];
 }
 export interface IToken {
-    readonly id: string;
-    userId: string;
-    role: string;
+    readonly id: Types.ObjectId;
+    userId: Types.ObjectId;
+    role: RoleUSER;
     token: string;
     expires: Date;
     isRevoked: boolean;
@@ -80,11 +81,13 @@ export interface IFile {
     readonly id: Types.ObjectId;
     sessionId: Types.ObjectId;
     userId: Types.ObjectId;
+    presentId?: Types.ObjectId | undefined;
     title: string;
     url: string;
     publicId: string;
     resourceType: string;
     order: number;
+    typeAssenment: TypeAssenment;
     createdAt: Date;
     updatedAt: Date;
 }

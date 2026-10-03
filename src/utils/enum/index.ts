@@ -17,3 +17,9 @@ export enum CategoryType {
     INTERMEDIATE = "intermediate",
     ADVANCED = "advanced",
 }
+export enum TypeAssenment {
+    VIEW = "view",
+    QUIZ = "quiz",
+    ASSIGNMENT = "assignment",
+    ANSWERASSIGNMENT = "answerAssignment",
+}
