@@ -37,7 +37,16 @@ export const bootstrap = (app: Express, express: any): void => {
             allowedHeaders: ["Content-Type", "Authorization"],
         }),
         limiter,
-        helmet(),
+        helmet({
+            contentSecurityPolicy: {
+                directives: {
+                    defaultSrc: ["'self'"],
+                    scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+                    styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+                    imgSrc: ["'self'", "data:", "https://cdnjs.cloudflare.com"],
+                },
+            },
+        })
     );
     const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css";
     const JS_URL = [
