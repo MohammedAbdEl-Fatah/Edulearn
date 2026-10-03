@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { env } from "../config/env.local";
 
 //! VERY IMPORTANT LINE WHEN MODE PROJECT LOACL OR PRODUCTION
-const uri = env.mongoUriLocal;
+const uri = env.mongoUri;
 
 declare global {
     // eslint-disable-next-line no-var
