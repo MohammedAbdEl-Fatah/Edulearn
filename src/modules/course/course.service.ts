@@ -15,7 +15,7 @@ class CourseService {
         private readonly responseCourse: CourseResponse
     ) { }
 
-
+    ///////////teacher user ////////////////////////////////////
     //create course
     public createCourse = asyncHandleError(async (req: Request, res: Response) => {
         //check role user is teacher
@@ -72,8 +72,8 @@ class CourseService {
             const responseDeleteCourse = this.responseCourse.deleteCourseResponse(courseDelete);
             return res.status(200).json(responseDeleteCourse);
         });
-
-
+/////////////////////////////all user///////////////////////////
+    // this for all users 
     //get course => mean select id from courses any one can give course id
     public getCourse = asyncHandleError(
         async (req: Request, res: Response) => {
@@ -91,6 +91,7 @@ class CourseService {
             const responseGetCourse = this.responseCourse.getCourseResponse(courseDB, courseID.data.id);
             return res.status(200).json(responseGetCourse);
         });
+    //course for owner teacher aslo student show course teacher if he was show course
     // get all course for one teacher 
     public getCoursesTeacher = asyncHandleError(
         async (req: Request, res: Response) => {

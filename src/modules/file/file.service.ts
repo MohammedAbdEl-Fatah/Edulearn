@@ -6,6 +6,7 @@ import { AppError } from "../../error/app.error";
 import { UploadApiResponse } from "cloudinary";
 import fileFactory from "./file.factory";
 import { IFile } from "../../utils/interface";
+import { RoleUSER } from "../../utils/enum";
 
 class FileService {
 
@@ -137,6 +138,32 @@ class FileService {
 
       //!all student what do in session 
       //get all assnenment student 
+      public getAllfilesSession = asyncHandleError(
+            async (req: Request, res: Response, next: NextFunction) => {
+                  // const userId = req.user!.id;//id student
+                  const teacherId = req.params.teacherId;//id teacher
+                  const sessionId = req.params.id;//id session 
+                  //todo::payment  => check student has course from teacher in DB of Payment 
+                  if (!sessionId) {
+                        throw new AppError("Session is required", 400);
+                  }
+                  //check owner teacher 
+                  if (req.user?.role === RoleUSER.TEACHER) {
+                        if (req.user!.id.toString() !== teacherId) {
+                              throw new AppError("Forbidden", 403);
+                        }
+                  }
+                  const files = await this.fileRepo.getAll({ filter: { sessionId, userId: teacherId }, options: { projection: {} } });
+                  if (!files) {
+                        throw new AppError("Files not found", 404);
+                  }
+                  res.status(200).json({
+                        success: true,
+                        message: "Files fetched successfully",
+                        data: files
+                  });
+            }
+      );
       //create pdf from student => assenment 
       //get correst from teacher 
 

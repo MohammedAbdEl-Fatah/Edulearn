@@ -20,5 +20,5 @@ fileController.delete("/delete/:id",
       allowRoles(RoleUSER.TEACHER),
       fileService.deleteFile);
 
-
+fileController.get("/get-files-session/:teacherId/:id", authMiddleware, allowRoles(RoleUSER.STUDENT, RoleUSER.TEACHER), fileService.getAllfilesSession)
 export default fileController;
