@@ -30,9 +30,10 @@ const port: number = parseInt(env.PORT || "8000");
 export const bootstrap = (app: Express, express: any): void => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    app.set("trust proxy", 1);
     app.use(
         cors({
-            origin: /*process.env.CORS_ORIGIN*/ "*", // TODO: uncomment this line and comment the next line
+            origin: ["*"],
             methods: ["GET", "POST", "PUT", "DELETE"],
             allowedHeaders: ["Content-Type", "Authorization"],
         }),
