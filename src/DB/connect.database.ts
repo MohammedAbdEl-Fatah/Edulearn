@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 import { env } from "../config/env.local";
 
-//! VERY IMPORTANT LINE WHEN MODE PROJECT LOACL OR PRODUCTION
-const uri = env.mongoUri;
-
 declare global {
     // eslint-disable-next-line no-var
     var mongooseCache:
@@ -22,6 +19,7 @@ const getCache = () => {
 };
 
 export const connectDatabase = async (): Promise<void> => {
+    const uri = env.mongoUri || process.env.MONGO_URI || env.mongoUriLocal || process.env.MONGO_URI_LOCAL;
     if (!uri) {
         throw new Error("MONGO_URI environment variable is not defined.");
     }

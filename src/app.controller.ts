@@ -24,6 +24,7 @@ const limiter = rateLimit({
     statusCode: 429,
     standardHeaders: true,
     legacyHeaders: false,
+    validate: { forwardedHeader: false },
 });
 const port: number = parseInt(env.PORT || "8000");
 
