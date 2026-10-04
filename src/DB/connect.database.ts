@@ -1,22 +1,6 @@
 import mongoose from "mongoose";
 import { env } from "../config/env.local";
 
-declare global {
-    // eslint-disable-next-line no-var
-    var mongooseCache:
-        | {
-            conn: typeof mongoose | null;
-            promise: Promise<typeof mongoose> | null;
-        }
-        | undefined;
-}
-
-const getCache = () => {
-    if (!global.mongooseCache) {
-        global.mongooseCache = { conn: null, promise: null };
-    }
-    return global.mongooseCache;
-};
 
 export const connectDatabase = async (): Promise<void> => {
     const uri = env.mongoUri || process.env.MONGO_URI || env.mongoUriLocal || process.env.MONGO_URI_LOCAL;
@@ -24,26 +8,10 @@ export const connectDatabase = async (): Promise<void> => {
         throw new Error("MONGO_URI environment variable is not defined.");
     }
 
-    const cached = getCache();
-
-    if (cached.conn) {
-        return;
-    }
-
-    if (!cached.promise) {
-        cached.promise = mongoose.connect(uri);
-    }
-
-    try {
-        cached.conn = await cached.promise;
-        if (uri.includes("localhost")) {
-            console.log("Connected to MongoDB (localhost)");
-        } else {
-            console.log("Connected to MongoDB (production)");
-        }
-    } catch (error) {
-        cached.promise = null;
-        console.error("Failed to connect to MongoDB:", error);
+    await mongoose.connect(uri).then(() => {
+        console.log(`Connected to MongoDB ${uri}`);
+    }).catch((error) => {
+        console.error(`Failed to connect to MongoDB ${uri}`, error);
         throw error;
-    }
+    });
 };

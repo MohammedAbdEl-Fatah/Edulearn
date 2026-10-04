@@ -28,7 +28,9 @@ const limiter = rateLimit({
 });
 const port: number = parseInt(env.PORT || "8000");
 
-export const bootstrap = (app: Express, express: any): void => {
+export const bootstrap = async (app: Express, express: any): Promise<void> => {
+
+    await connectDatabase();
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     app.set("trust proxy", 1);
@@ -69,15 +71,7 @@ export const bootstrap = (app: Express, express: any): void => {
     );
     app.use("/api-docs.json", (_, res) => res.json(swaggerSpec));
 
-    app.use(async (_req, res, next) => {
-        try {
-            await connectDatabase();
-            next();
-        } catch (error) {
-            console.error("Database connection error:", error);
-            res.status(503).json({ message: "Service temporarily unavailable" });
-        }
-    });
+
 
     app.get("/", (_req, res) => {
         res.json({ message: "Hello World", date: Date.now() });
