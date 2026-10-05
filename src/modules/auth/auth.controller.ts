@@ -130,7 +130,7 @@ router.post(
 /**
  * @openapi
  * /auth/logout:
- *  post:
+ *   patch:
  *     summary: Logout
  *     tags: [Authentication]
  *     security:
