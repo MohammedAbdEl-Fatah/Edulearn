@@ -28,15 +28,15 @@ const limiter = rateLimit({
 });
 const port: number = parseInt(env.PORT || "8000");
 
-export const bootstrap = async (app: Express, express: any): Promise<void> => {
+export const bootstrap = (app: Express, express: any): void => {
 
-    await connectDatabase();
-    app.use(express.json());
+    connectDatabase();
+
     app.use(express.urlencoded({ extended: true }));
     app.set("trust proxy", 1);
     app.use(
         cors({
-            origin: ["*"],
+            origin: true,
             methods: ["GET", "POST", "PUT", "DELETE"],
             allowedHeaders: ["Content-Type", "Authorization"],
         }),
@@ -58,6 +58,7 @@ export const bootstrap = async (app: Express, express: any): Promise<void> => {
         "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js"
     ];
 
+    app.use(express.json());
     app.use(
         "/api-docs",
         swaggerUIExpress.serveFiles(swaggerSpec, {
