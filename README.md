@@ -1,208 +1,204 @@
-# EduLearn
+# EduLearn 
 
-EduLearn is an innovative educational platform designed to connect teachers and students, providing a comprehensive learning experience. The platform enables teachers to create and manage courses, record educational videos, and share PDF materials with students.
+EduLearn is a modern, high-performance E-Learning platform built with **Node.js**, **Express**, **TypeScript**, and **MongoDB**. It offers a robust environment connecting educators (teachers) and learners (students). 
 
-##  Project Overview
+The platform enables teachers to build structured courses, organize lesson sessions, stream/upload video lessons, and attach PDF assignments with automated submission & grading workflows.
 
-EduLearn aims to bridge the gap between educators and learners by providing a robust platform for:
-- **Teachers**: Create courses, record video lessons, upload PDF materials, and manage student engagement
-- **Students**: Access quality educational content, learn through videos and PDFs, and track their progress
+---
 
-##  Key Features
+## 🚀 Key Features
 
-### For Teachers
-- **Course Creation**: Create and manage comprehensive courses with detailed descriptions
-- **Video Recording**: Record and upload educational videos organized by sessions
-- **PDF Materials**: Upload and share PDF documents as supplementary learning materials
-- **Student Management**: Track enrolled students and their progress
-- **Review System**: Receive and manage student reviews and feedback
+### 👨‍🏫 For Teachers
+- **Course Management**: Create, update, list, and delete structured courses.
+- **Session Structuring**: Divide courses into organized modules and sessions.
+- **Video Content**: Upload multi-video files (up to 10 at once) per session to Cloudinary and dynamically reorder video playlists.
+- **Material & Assignment Upload**: Upload reference files, quizzes, and assignments for students.
+- **Grading System**: Review student assignment submissions, set numerical scores (0–100), and provide feedback.
 
-### For Students
-- **Course Discovery**: Browse and enroll in courses across various categories
-- **Video Learning**: Access high-quality video lessons organized in structured sessions
-- **PDF Resources**: Download and study PDF materials provided by instructors
-- **Progress Tracking**: Monitor learning progress through course completion
-- **Reviews & Ratings**: Provide feedback on courses and instructors
+### 👨‍🎓 For Students
+- **Course & Session Access**: Discover courses, explore sessions, and stream video content.
+- **Assignment Submissions**: Submit answers for assignments associated with sessions.
+- **Grades & Feedback**: Access graded results and direct teacher feedback on submitted assignments.
 
-### Platform Features
-- **User Authentication**: Secure signup and login for both teachers and students
-- **Email Verification**: OTP-based email verification system
-- **Role-Based Access**: Distinct roles for teachers and students with appropriate permissions
-- **Session Management**: Organize course content into structured sessions
-- **Review System**: Comprehensive review and rating mechanism for courses
-- **Secure API**: RESTful API with JWT authentication and rate limiting
+###  Core Platform & Security Features
+- **Role-Based Access Control (RBAC)**: Enforced via `STUDENT` and `TEACHER` roles.
+- **Authentication**: JWT authentication with refresh token flow & bcrypt password hashing.
+- **Email & OTP**: Nodemailer integration with OTP verification for email confirmation & password reset.
+- **Rate Limiting & Security**: Rate limiting (`express-rate-limit`), security headers (`helmet`), CORS configuration, and Zod body validation.
+- **Interactive Documentation**: Auto-generated Swagger OpenAPI 3.0 documentation served at `/api-docs`.
 
-##  Technologies & Tools
+---
 
-### Core Framework
-- **Node.js** (v22.11.0) - JavaScript runtime
-- **Express** (v5.2.1) - Web application framework
-- **TypeScript** (v7.0.2) - Type-safe JavaScript
+## 🛠️ Tech Stack
 
-### Database & Storage
-- **MongoDB** (via Mongoose v8.18.1) - NoSQL database for data persistence
-- **Cloudinary** (v2.10.0) - Cloud-based media storage for videos and PDFs
+| Domain | Technology |
+| :--- | :--- |
+| **Runtime & Framework** | Node.js (v22.11.0), Express.js (v5.2.1), TypeScript (v7.0.2) |
+| **Database & ORM** | MongoDB, Mongoose (v8.18.1) |
+| **Cloud Media Storage** | Cloudinary (v2.10.0) |
+| **Authentication & Security**| JWT (`jsonwebtoken`), Bcrypt, Helmet, Express Rate Limit, Zod |
+| **File Processing** | Multer, File-Type |
+| **API Documentation** | Swagger UI Express, Swagger-JSDoc |
+| **Communication** | Nodemailer (Email/OTP delivery) |
 
-### Authentication & Security
-- **JWT** (jsonwebtoken v9.0.3) - Token-based authentication
-- **bcrypt** (v6.0.0) - Password hashing
-- **crypto-js** (v4.2.0) - Encryption utilities
-- **Helmet** (v8.2.0) - Security headers
-- **express-rate-limit** (v8.5.2) - API rate limiting
+---
 
-### File Handling
-- **Multer** (v2.2.0) - File upload handling
-- **file-type** (v22.0.2) - File type detection
-
-### Email Services
-- **Nodemailer** (v9.0.1) - Email sending functionality
-
-### API Documentation
-- **Swagger** (swagger-jsdoc v6.3.0, swagger-ui-express v5.0.1) - Interactive API documentation
-
-### Validation & Utilities
-- **Zod** (v4.4.3) - Schema validation
-- **CORS** (v2.8.6) - Cross-origin resource sharing
-- **Morgan** (v1.11.0) - HTTP request logger
-
-### Development Tools
-- **Concurrently** (v10.0.3) - Run multiple commands simultaneously
-- **dotenv** (v17.4.2) - Environment variable management
---------------------------------------------------------
-##  Project Structure
-
+## 📁 Project Structure
 
 ```
 Edulearn/
 ├── src/
-│   ├── DB/                    # Database models and repositories
-│   │   ├── course/           # Course schema and repository
-│   │   ├── pdf/              # PDF schema and repository
-│   │   ├── review/           # Review schema and repository
-│   │   ├── session/          # Session schema and repository
-│   │   ├── token/            # Token schema and repository
-│   │   ├── user/             # User schema and repository
-│   │   └── video/            # Video schema and repository
-│   ├── config/               # Configuration files
-│   ├── middleware/           # Express middleware
-│   ├── modules/              # Feature modules
-│   │   ├── auth/            # Authentication module
-│   │   ├── course/          # Course module
-│   │   └── user/            # User module
-│   ├── types/                # TypeScript type definitions
-│   ├── utils/                # Utility functions
-│   ├── app.controller.ts     # Main application controller
-│   └── index.ts              # Application entry point
-├── .env                      # Environment variables
-├── .env.local               # Local environment configuration
-├── package.json              # Project dependencies
-├── tsconfig.json            # TypeScript configuration
-└── vercel.json              # Vercel deployment configuration
+│   ├── app.controller.ts        # Main Express application bootstrap & route assembly
+│   ├── index.ts                 # Application entry point
+│   ├── DB/                      # Database connection, schemas, and repositories
+│   │   ├── course/              # Course database model & repository
+│   │   ├── file/                # File database model & repository
+│   │   ├── session/             # Session database model & repository
+│   │   ├── token/               # Token database model & repository
+│   │   ├── user/                # User database model & repository
+│   │   └── video/               # Video database model & repository
+│   ├── config/                  # Environment variable configuration
+│   ├── error/                   # Global custom AppError & async handler wrapper
+│   ├── middleware/              # Auth, Role-based access, Multer, and Zod Validation middleware
+│   ├── modules/                 # Modular feature controllers, services, responses, and DTOs
+│   │   ├── auth/                # Auth controller & service
+│   │   ├── course/              # Course controller & service
+│   │   ├── file/                # File & assignment controller & service
+│   │   ├── session/             # Session controller & service
+│   │   ├── user/                # User profile controller & service
+│   │   └── video/               # Video stream controller & service
+│   ├── types/                   # TypeScript global declarations
+│   └── utils/                   # Cloudinary SDK, Enums, and Swagger definitions
+├── .env                         # Production environment variables
+├── .env.local                   # Local development environment variables
+├── package.json                 # Project dependencies & scripts
+├── tsconfig.json                # TypeScript compiler configuration
+└── vercel.json                  # Deployment configuration for Vercel
 ```
 
-##  Getting Started
+---
 
-###  Prerequisites
-- Node.js v22.11.0 or higher
-- MongoDB database
-- Cloudinary account (for media storage)
+## 📡 API Endpoints Directory
 
-### Installation
+Base URL: `http://localhost:8000/api/v1`
 
-1. Clone the repository:
+### 🔑 Authentication (`/api/v1/auth`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/auth/sign-up/student` | Public | Register a new Student account |
+| `POST` | `/auth/sign-up/teacher` | Public | Register a new Teacher account |
+| `PUT` | `/auth/confirm-email` | Public | Confirm account email via OTP |
+| `POST` | `/auth/login` | Public | Authenticate user & receive access/refresh tokens |
+| `PATCH` | `/auth/logout` | Authenticated | Invalidate current session/token |
+| `POST` | `/auth/refresh-token` | Public | Obtain new access token using refresh token |
+| `POST` | `/auth/generated-otp` | Public | Generate OTP for password recovery |
+| `POST` | `/auth/forget-password` | Public | Reset password using OTP |
+
+### User (`/api/v1/user`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/user/profile` | Authenticated | Retrieve logged-in user profile information |
+
+###  Course (`/api/v1/course`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/course/create-course` | Teacher | Create a new course |
+| `PATCH` | `/course/edit-course/:id` | Teacher (Owner) | Edit existing course details |
+| `GET` | `/course/get-course/:id` | Public | Get single course details by ID |
+| `GET` | `/course/get-all-course` | Public | List all published courses |
+| `GET` | `/course/get-courses-teacher/:id` | Public | Get all courses published by a specific teacher |
+| `DELETE` | `/course/delete-course/:id` | Teacher (Owner) | Delete a course by ID |
+
+###  Session (`/api/v1/session`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/session/create-session/:id` | Teacher | Add a new session module to course `:id` |
+| `PUT` | `/session/update-session/:sessionID/:id` | Teacher | Update session title for course `:id` |
+| `GET` | `/session/get-all-sessions/:id` | Authenticated | Get all sessions for course `:id` |
+| `DELETE` | `/session/delete-session/:sessionID/:id` | Teacher | Delete a session module |
+
+###  Video (`/api/v1/video`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/video/upload/:id` | Teacher | Upload up to 10 video files for session `:id` |
+| `GET` | `/video/get-all-video/:id` | Teacher | Retrieve all video files in session `:id` |
+| `GET` | `/video/get-video/:id/:idvideo` | Teacher | Get specific video details in session `:id` |
+| `PATCH` | `/video/:id/reorder` | Teacher | Reorder video sequence in session `:id` |
+| `DELETE` | `/video/delete-video/:id/:idvideo` | Teacher | Delete a video file from Cloudinary and DB |
+
+###  File & Assignment (`/api/v1/file`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/file/upload/:id` | Teacher | Upload assignment or PDF file to session `:id` |
+| `POST` | `/file/submit-assignment/:id/:idAssenment` | Student | Submit answer file for assignment `:idAssenment` |
+| `PATCH` | `/file/result/:id` | Teacher | Grade submitted student file `:id` & attach feedback |
+| `PUT` | `/file/replace/:id` | Teacher | Replace an uploaded file |
+| `DELETE` | `/file/delete/:id` | Teacher | Delete a file from Cloudinary & DB |
+| `GET` | `/file/get-correst/:id` | Student | View grade & feedback result for file `:id` |
+| `GET` | `/file/get-all-submit-assignment/:id` | Teacher | List all student submissions for assignment `:id` |
+| `GET` | `/file/get-files-session/:teacherId/:id` | Student/Teacher | Retrieve files for session `:id` |
+
+---
+
+## 💻 Getting Started
+
+### Prerequisites
+- **Node.js** `>= v22.11.0`
+- **MongoDB** instance (Local or MongoDB Atlas)
+- **Cloudinary Account** (for video and file asset uploads)
+
+### 1️⃣ Installation
 ```bash
-git clone <repository-url>
+git clone https://github.com/MohammedAbdEl-Fatah/Edulearn
 cd Edulearn
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
-3. Configure environment variables:
-Create a `.env` file with the following variables:
-```
-PORT=your_port_connection_string
-MONGODB_URI=your_mongodb_connection_string
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-JWT_SECRET=your_jwt_secret
-EMAIL_HOST=your_email_host
-EMAIL_USER=your_email_user
-EMAIL_PASS=your_email_password
+### 2️⃣ Environment Configuration
+Create a `.env` or `.env.local` file in the project root:
+```env
+PORT=8000
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/edulearn
+JWT_SECRET=your_jwt_secret_key
+REFRESH_TOKEN_SECRET=your_refresh_token_secret_key
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
 ```
 
-4. Build the project:
+### 3️⃣ Build & Run
+
+**Build TypeScript:**
 ```bash
 npm run build
 ```
 
-5. Start the development server:
+**Run Development Server (with Watch Mode):**
 ```bash
 npm run dev:run
 ```
 
-Or for production:
+**Run Production Server:**
 ```bash
 npm start
 ```
 
-### API Documentation
-
-Once the server is running, access the interactive API documentation at:
+### 📖 API Swagger Documentation
+Once the application starts, navigate to:
 ```
 http://localhost:8000/api-docs
 ```
+You will find interactive OpenAPI 3.0 documentation where you can execute and test endpoints directly.
 
-## API Endpoints
+---
 
-### Authentication
-- `POST /api/v1/auth/signup/student` - Student registration
-- `POST /api/v1/auth/signup/teacher` - Teacher registration
-- `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/verify-email` - Email verification
-- `POST /api/v1/auth/forgot-password` - Password reset request
-
-### User
-- `GET /api/v1/user/profile` - Get user profile
-- `PUT /api/v1/user/profile` - Update user profile
-
-### Course
-- `POST /api/v1/course/create` - Create new course
-- `GET /api/v1/course/:id` - Get course details
-- `GET /api/v1/courses` - List all courses
-- `PUT /api/v1/course/:id` - Update course
-- `DELETE /api/v1/course/:id` - Delete course
-
-## 🔒 Security Features
-
-- JWT-based authentication
-- Password hashing with bcrypt
-- Rate limiting to prevent API abuse
-- CORS configuration for cross-origin requests
-- Helmet for security headers
-- Input validation with Zod
-
-## 🌟 Future Enhancements
-
-- Real-time chat between teachers and students
-- Live streaming capabilities
-- Payment integration for paid courses
-- Certificate generation upon course completion
-- Advanced analytics and reporting
-- Mobile application support
-
-
-## 👥 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Contact
+## 📧 Contact & Support
 
 Created by **Mohamed Mohamed Abd El Fatah**:
-- WhatsApp: +20 10 91428881
-- LinkedIn: https://www.linkedin.com/in/mohamed-mohamed-abd-el-fatah-a276ab264/
-- Email: mohammedabdelfatah837@gmail.com
-
+- **WhatsApp**: +20 10 91428881
+- **LinkedIn**: [LinkedIn Profile](https://www.linkedin.com/in/mohamed-mohamed-abd-el-fatah-a276ab264/)
+- **Email**: mohammedabdelfatah837@gmail.com
