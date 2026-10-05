@@ -5,8 +5,8 @@ const userEmail: string = env.USER_EMAIL || "";
 const passwordEmail: string = env.USER_PASSWORD || "";
 const configEmail = {
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
         user: userEmail,
         pass: passwordEmail
