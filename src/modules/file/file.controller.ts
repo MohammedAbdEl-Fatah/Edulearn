@@ -58,7 +58,7 @@ fileController.post("/upload/:id", authMiddleware, allowRoles(RoleUSER.TEACHER),
 
 /**
  * @openapi
- * /file/submit-assignment/{id}/{idAssenment}:
+ * /file/submit-assignment/id/{id}/idAssignment/{idAssignment}:
  *   post:
  *     summary: Submit an assignment answer file
  *     tags: [File]
@@ -72,7 +72,7 @@ fileController.post("/upload/:id", authMiddleware, allowRoles(RoleUSER.TEACHER),
  *           type: string
  *         description: Session ID
  *       - in: path
- *         name: idAssenment
+ *         name: idAssignment
  *         required: true
  *         schema:
  *           type: string
@@ -102,7 +102,7 @@ fileController.post("/upload/:id", authMiddleware, allowRoles(RoleUSER.TEACHER),
  *       500:
  *         description: Internal server error
  */
-fileController.post("/submit-assignment/:id/:idAssenment", authMiddleware, allowRoles(RoleUSER.STUDENT),
+fileController.post("/submit-assignment/id/:id/idAssignment/:idAssignment", authMiddleware, allowRoles(RoleUSER.STUDENT),
       MulterService.singleFile("file"), fileService.submitAssenment);
 
 /**
@@ -237,7 +237,7 @@ fileController.delete("/delete/:id",
 
 /**
  * @openapi
- * /file/get-correst/{id}:
+ * /file/get-correct/{id}:
  *   get:
  *     summary: Get corrected assignment result for a student
  *     tags: [File]
@@ -264,7 +264,7 @@ fileController.delete("/delete/:id",
  *       500:
  *         description: Internal server error
  */
-fileController.get("/get-correst/:id", authMiddleware, allowRoles(RoleUSER.STUDENT), fileService.getCorrestFile);
+fileController.get("/get-correct/:id", authMiddleware, allowRoles(RoleUSER.STUDENT), fileService.getCorrestFile);
 
 /**
  * @openapi
@@ -297,7 +297,7 @@ fileController.get("/get-all-submit-assignment/:id", authMiddleware, allowRoles(
 
 /**
  * @openapi
- * /file/get-files-session/{teacherId}/{id}:
+ * /file/get-files-session/teacherId/{teacherId}/id/{id}:
  *   get:
  *     summary: Get all files for a session of a teacher
  *     tags: [File]
@@ -330,6 +330,6 @@ fileController.get("/get-all-submit-assignment/:id", authMiddleware, allowRoles(
  *       500:
  *         description: Internal server error
  */
-fileController.get("/get-files-session/:teacherId/:id", authMiddleware, allowRoles(RoleUSER.STUDENT, RoleUSER.TEACHER), fileService.getAllfilesSession);
+fileController.get("/get-files-session/teacherId/:teacherId/id/:id", authMiddleware, allowRoles(RoleUSER.STUDENT, RoleUSER.TEACHER), fileService.getAllfilesSession);
 
 export default fileController;

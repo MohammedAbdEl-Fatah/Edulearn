@@ -174,7 +174,7 @@ class VideoService {
       public getOneVideo = asyncHandleError(
             async (req: Request, res: Response, next: NextFunction) => {
                   const sessionId = req.params.id;
-                  const videoId = req.params.idvideo;
+                  const videoId = (req.params.idVideo || req.params.idvideo) as string;
                   const userId = req.user?.id;
 
                   if (!userId) {
@@ -232,7 +232,7 @@ class VideoService {
       public deleteVideo = asyncHandleError(
             async (req: Request, res: Response, next: NextFunction) => {
                   const sessionId = req.params.id;
-                  const videoId = req.params.idvideo;
+                  const videoId = (req.params.idVideo || req.params.idvideo) as string;
                   const userId = req.user?.id;
 
 

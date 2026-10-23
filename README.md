@@ -4,6 +4,8 @@ EduLearn is a modern, high-performance E-Learning platform built with **Node.js*
 
 The platform enables teachers to build structured courses, organize lesson sessions, stream/upload video lessons, and attach PDF assignments with automated submission & grading workflows.
 
+> 🌐 **Live Production API Documentation (Swagger)**: [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/)
+
 ---
 
 ## 🚀 Key Features
@@ -25,7 +27,7 @@ The platform enables teachers to build structured courses, organize lesson sessi
 - **Authentication**: JWT authentication with refresh token flow & bcrypt password hashing.
 - **Email & OTP**: Nodemailer integration with OTP verification for email confirmation & password reset.
 - **Rate Limiting & Security**: Rate limiting (`express-rate-limit`), security headers (`helmet`), CORS configuration, and Zod body validation.
-- **Interactive Documentation**: Auto-generated Swagger OpenAPI 3.0 documentation served at `/api-docs`.
+- **Interactive Documentation**: Auto-generated Swagger OpenAPI 3.0 documentation served live at [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/) (and locally at `/api-docs`).
 
 ---
 
@@ -80,7 +82,9 @@ Edulearn/
 
 ## 📡 API Endpoints Directory
 
-Base URL: `http://localhost:8000/api/v1`
+- **Production Base URL**: `https://edulearn-gray.vercel.app/api/v1`
+- **Local Base URL**: `http://localhost:8000/api/v1`
+- **Live Swagger Documentation**: [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/)
 
 ### 🔑 Authentication (`/api/v1/auth`)
 | Method | Endpoint | Access | Description |
@@ -109,34 +113,34 @@ Base URL: `http://localhost:8000/api/v1`
 | `GET` | `/course/get-courses-teacher/:id` | Public | Get all courses published by a specific teacher |
 | `DELETE` | `/course/delete-course/:id` | Teacher (Owner) | Delete a course by ID |
 
-###  Session (`/api/v1/session`)
+### 📁 Session (`/api/v1/session`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/session/create-session/:id` | Teacher | Add a new session module to course `:id` |
-| `PUT` | `/session/update-session/:sessionID/:id` | Teacher | Update session title for course `:id` |
+| `PUT` | `/session/update-session/sessionId/:sessionID/id/:id` | Teacher | Update session title for course `:id` |
 | `GET` | `/session/get-all-sessions/:id` | Authenticated | Get all sessions for course `:id` |
-| `DELETE` | `/session/delete-session/:sessionID/:id` | Teacher | Delete a session module |
+| `DELETE` | `/session/delete-session/sessionId/:sessionID/id/:id` | Teacher | Delete a session module |
 
-###  Video (`/api/v1/video`)
+### 📹 Video (`/api/v1/video`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/video/upload/:id` | Teacher | Upload up to 10 video files for session `:id` |
 | `GET` | `/video/get-all-video/:id` | Teacher | Retrieve all video files in session `:id` |
-| `GET` | `/video/get-video/:id/:idvideo` | Teacher | Get specific video details in session `:id` |
+| `GET` | `/video/get-video/id/:id/idVideo/:idVideo` | Teacher | Get specific video details in session `:id` |
 | `PATCH` | `/video/:id/reorder` | Teacher | Reorder video sequence in session `:id` |
-| `DELETE` | `/video/delete-video/:id/:idvideo` | Teacher | Delete a video file from Cloudinary and DB |
+| `DELETE` | `/video/delete-video/id/:id/idVideo/:idVideo` | Teacher | Delete a video file from Cloudinary and DB |
 
-###  File & Assignment (`/api/v1/file`)
+### 📄 File & Assignment (`/api/v1/file`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/file/upload/:id` | Teacher | Upload assignment or PDF file to session `:id` |
-| `POST` | `/file/submit-assignment/:id/:idAssenment` | Student | Submit answer file for assignment `:idAssenment` |
+| `POST` | `/file/submit-assignment/id/:id/idAssignment/:idAssignment` | Student | Submit answer file for assignment `:idAssignment` |
 | `PATCH` | `/file/result/:id` | Teacher | Grade submitted student file `:id` & attach feedback |
 | `PUT` | `/file/replace/:id` | Teacher | Replace an uploaded file |
 | `DELETE` | `/file/delete/:id` | Teacher | Delete a file from Cloudinary & DB |
-| `GET` | `/file/get-correst/:id` | Student | View grade & feedback result for file `:id` |
+| `GET` | `/file/get-correct/:id` | Student | View grade & feedback result for file `:id` |
 | `GET` | `/file/get-all-submit-assignment/:id` | Teacher | List all student submissions for assignment `:id` |
-| `GET` | `/file/get-files-session/:teacherId/:id` | Student/Teacher | Retrieve files for session `:id` |
+| `GET` | `/file/get-files-session/teacherId/:teacherId/id/:id` | Student/Teacher | Retrieve files for session `:id` |
 
 ---
 
@@ -188,10 +192,10 @@ npm start
 ```
 
 ### 📖 API Swagger Documentation
-Once the application starts, navigate to:
-```
-http://localhost:8000/api-docs
-```
+Explore and test all endpoints interactively:
+- **Production (Live)**: [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/)
+- **Local Development**: `http://localhost:8000/api-docs`
+
 You will find interactive OpenAPI 3.0 documentation where you can execute and test endpoints directly.
 
 ---

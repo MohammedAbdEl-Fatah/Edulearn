@@ -9,7 +9,6 @@ export const globalErrorController = (err: AppError, req: Request, res: Response
     if (err instanceof MulterError) {
         if (err.message.includes("File too large")) return res.status(400).json({ status: false, message: "File too large, It's must be less than 100MB" });
         if (err.message.includes("Unexpected field")) return res.status(400).json({ status: false, message: "Invalid file field" });
-        if (err.message.includes("File too large")) return res.status(400).json({ status: false, message: "File too large, It's must be less than 100MB" });
         return res.status(400).json({ status: false, message: err.message });
     }
     if (err instanceof AppError) {

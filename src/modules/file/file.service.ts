@@ -217,7 +217,7 @@ class FileService {
             async (req: Request, res: Response, next: NextFunction) => {
                   const userId = req.user!.id; // id student
                   const SessionID = req.params.id;// id file assenment
-                  const assenmentId = req.params.idAssenment;// id file assenment
+                  const assenmentId = (req.params.idAssignment || req.params.idAssenment) as string;// id file assignment
                   const fileUser = req.file;
                   if (!SessionID) {
                         throw new AppError("session id or id assenment is required", 400);

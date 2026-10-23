@@ -61,7 +61,7 @@ videoController.post(
 
 /**
  * @openapi
- * /video/delete-video/{id}/{idvideo}:
+ * /video/delete-video/id/{id}/idVideo/{idVideo}:
  *   delete:
  *     summary: Delete a specific video from a session
  *     tags: [Video]
@@ -75,7 +75,7 @@ videoController.post(
  *           type: string
  *         description: Session ID
  *       - in: path
- *         name: idvideo
+ *         name: idVideo
  *         required: true
  *         schema:
  *           type: string
@@ -95,7 +95,7 @@ videoController.post(
  *         description: Internal server error
  */
 videoController.delete(
-      "/delete-video/:id/:idvideo",
+      "/delete-video/id/:id/idVideo/:idVideo",
       authMiddleware,
       allowRoles(RoleUSER.TEACHER),
       videoService.deleteVideo
@@ -139,7 +139,7 @@ videoController.get(
 
 /**
  * @openapi
- * /video/get-video/{id}/{idvideo}:
+ * /video/get-video/id/{id}/idVideo/{idVideo}:
  *   get:
  *     summary: Get details of a single video in a session
  *     tags: [Video]
@@ -153,7 +153,7 @@ videoController.get(
  *           type: string
  *         description: Session ID
  *       - in: path
- *         name: idvideo
+ *         name: idVideo
  *         required: true
  *         schema:
  *           type: string
@@ -173,7 +173,7 @@ videoController.get(
  *         description: Internal server error
  */
 videoController.get(
-      "/get-video/:id/:idvideo",
+      "/get-video/id/:id/idVideo/:idVideo",
       authMiddleware,
       allowRoles(RoleUSER.TEACHER),
       videoService.getOneVideo

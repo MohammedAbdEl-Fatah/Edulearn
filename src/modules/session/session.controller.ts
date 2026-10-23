@@ -53,7 +53,7 @@ sessionController.post(
 
 /**
  * @openapi
- * /session/update-session/{sessionID}/{id}:
+ * /session/update-session/sessionId/{sessionID}/id/{id}:
  *   put:
  *     summary: Update an existing session
  *     tags: [Session]
@@ -97,7 +97,7 @@ sessionController.post(
  *         description: Internal server error
  */
 sessionController.put(
-    "/update-session/:sessionID/:id",
+    "/update-session/sessionId/:sessionID/id/:id",
     authMiddleware,
     sessionService.updateSession
 );
@@ -133,7 +133,7 @@ sessionController.get("/get-all-sessions/:id", authMiddleware, sessionService.ge
 
 /**
  * @openapi
- * /session/delete-session/{sessionID}/{id}:
+ * /session/delete-session/sessionId/{sessionID}/id/{id}:
  *   delete:
  *     summary: Delete a session
  *     tags: [Session]
@@ -166,4 +166,4 @@ sessionController.get("/get-all-sessions/:id", authMiddleware, sessionService.ge
  *       500:
  *         description: Internal server error
  */
-sessionController.delete("/delete-session/:sessionID/:id", authMiddleware, sessionService.deleteSession);
+sessionController.delete("/delete-session/sessionId/:sessionID/id/:id", authMiddleware, sessionService.deleteSession);

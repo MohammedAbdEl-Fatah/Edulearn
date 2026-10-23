@@ -88,7 +88,7 @@ export const bootstrap = (app: Express, express: any): void => {
 
     if (process.env.VERCEL !== "1") {
         const server = app.listen(port, () => {
-            console.log(`docmunetion : http://localhost:${port}/api-docs`);
+            console.log(`documentation : http://localhost:${port}/api-docs`);
             console.log(`Server running on port http://localhost:${port}`);
         });
         // 5 minutes timeout for video/file upload processing
