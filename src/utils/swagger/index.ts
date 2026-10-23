@@ -14,6 +14,32 @@ const options: swaggerJSDoc.Options = {
                 description: "Development server",
             },
         ],
+        tags: [
+            {
+                name: "Authentication",
+                description: "Authentication and authorization operations",
+            },
+            {
+                name: "User",
+                description: "User profile and account operations",
+            },
+            {
+                name: "Course",
+                description: "Course management operations",
+            },
+            {
+                name: "Session",
+                description: "Session and lecture management operations",
+            },
+            {
+                name: "Video",
+                description: "Video upload, streaming, and playlist operations",
+            },
+            {
+                name: "File",
+                description: "File and assignment submission & grading operations",
+            },
+        ],
         components: {
             securitySchemes: {
                 bearerAuth: {
@@ -76,7 +102,15 @@ const options: swaggerJSDoc.Options = {
             },
         },
     },
-    apis: ["./src/modules/**/*.controller.ts", "./src/modules/**/*.ts"],
+    apis: [
+        "./src/modules/auth/**/*.ts",
+        "./src/modules/user/**/*.ts",
+        "./src/modules/course/**/*.ts",
+        "./src/modules/session/**/*.ts",
+        "./src/modules/video/**/*.ts",
+        "./src/modules/file/**/*.ts",
+        "./src/modules/**/*.ts",
+    ],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
