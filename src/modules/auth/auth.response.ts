@@ -38,7 +38,7 @@ class AuthResponse {
             }
         }
     }
-    
+
     public confirmOtpResponse() {
         return {
             success: true,
@@ -55,5 +55,12 @@ class AuthResponse {
             }
         }
     }
+    public resetPasswordResponse() {
+        return {
+            success: true,
+            message: "Successfully update password",
+        }
+    }
+
 }
 export default new AuthResponse();

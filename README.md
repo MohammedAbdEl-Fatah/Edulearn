@@ -1,10 +1,10 @@
-# EduLearn 
+# EduLearn
 
-EduLearn is a modern, high-performance E-Learning platform built with **Node.js**, **Express**, **TypeScript**, and **MongoDB**. It offers a robust environment connecting educators (teachers) and learners (students). 
+EduLearn is a modern, high-performance E-Learning platform built with **Node.js**, **Express**, **TypeScript**, and **MongoDB**. It offers a robust environment connecting educators (teachers) and learners (students).
 
 The platform enables teachers to build structured courses, organize lesson sessions, stream/upload video lessons, and attach PDF assignments with automated submission & grading workflows.
 
-> 🌐 **Live Production API Documentation (Swagger)**: [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/)
+> 🌐 **Live Production API Documentation (Swagger)**: [https://edulearn-gray.vercel.app/api-docs](https://edulearn-gray.vercel.app/api-docs)
 
 ---
 
@@ -22,12 +22,13 @@ The platform enables teachers to build structured courses, organize lesson sessi
 - **Assignment Submissions**: Submit answers for assignments associated with sessions.
 - **Grades & Feedback**: Access graded results and direct teacher feedback on submitted assignments.
 
-###  Core Platform & Security Features
+### 🔒 Core Platform & Security Features
 - **Role-Based Access Control (RBAC)**: Enforced via `STUDENT` and `TEACHER` roles.
 - **Authentication**: JWT authentication with refresh token flow & bcrypt password hashing.
 - **Email & OTP**: Nodemailer integration with OTP verification for email confirmation & password reset.
 - **Rate Limiting & Security**: Rate limiting (`express-rate-limit`), security headers (`helmet`), CORS configuration, and Zod body validation.
-- **Interactive Documentation**: Auto-generated Swagger OpenAPI 3.0 documentation served live at [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/) (and locally at `/api-docs`).
+- **Request Logging**: HTTP request logging via Morgan.
+- **Interactive Documentation**: Auto-generated Swagger OpenAPI 3.0 documentation served live at [https://edulearn-gray.vercel.app/api-docs](https://edulearn-gray.vercel.app/api-docs) and locally at `/api-docs`.
 
 ---
 
@@ -36,11 +37,12 @@ The platform enables teachers to build structured courses, organize lesson sessi
 | Domain | Technology |
 | :--- | :--- |
 | **Runtime & Framework** | Node.js (v22.11.0), Express.js (v5.2.1), TypeScript (v7.0.2) |
-| **Database & ORM** | MongoDB, Mongoose (v8.18.1) |
+| **Database & ODM** | MongoDB, Mongoose (v8.18.1) |
 | **Cloud Media Storage** | Cloudinary (v2.10.0) |
-| **Authentication & Security**| JWT (`jsonwebtoken`), Bcrypt, Helmet, Express Rate Limit, Zod |
+| **Authentication & Security** | JWT (`jsonwebtoken`), Bcrypt, Helmet, Express Rate Limit, Zod |
 | **File Processing** | Multer, File-Type |
 | **API Documentation** | Swagger UI Express, Swagger-JSDoc |
+| **Logging** | Morgan |
 | **Communication** | Nodemailer (Email/OTP delivery) |
 
 ---
@@ -55,6 +57,7 @@ Edulearn/
 │   ├── DB/                      # Database connection, schemas, and repositories
 │   │   ├── course/              # Course database model & repository
 │   │   ├── file/                # File database model & repository
+│   │   ├── review/              # Review database model & repository
 │   │   ├── session/             # Session database model & repository
 │   │   ├── token/               # Token database model & repository
 │   │   ├── user/                # User database model & repository
@@ -84,7 +87,7 @@ Edulearn/
 
 - **Production Base URL**: `https://edulearn-gray.vercel.app/api/v1`
 - **Local Base URL**: `http://localhost:8000/api/v1`
-- **Live Swagger Documentation**: [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/)
+- **Live Swagger Documentation**: [https://edulearn-gray.vercel.app/api-docs](https://edulearn-gray.vercel.app/api-docs)
 
 ### 🔑 Authentication (`/api/v1/auth`)
 | Method | Endpoint | Access | Description |
@@ -98,12 +101,12 @@ Edulearn/
 | `POST` | `/auth/generated-otp` | Public | Generate OTP for password recovery |
 | `POST` | `/auth/forget-password` | Public | Reset password using OTP |
 
-### User (`/api/v1/user`)
+### 👤 User (`/api/v1/user`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/user/profile` | Authenticated | Retrieve logged-in user profile information |
 
-###  Course (`/api/v1/course`)
+### 📚 Course (`/api/v1/course`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/course/create-course` | Teacher | Create a new course |
@@ -193,7 +196,7 @@ npm start
 
 ### 📖 API Swagger Documentation
 Explore and test all endpoints interactively:
-- **Production (Live)**: [https://edulearn-gray.vercel.app/api-docs/](https://edulearn-gray.vercel.app/api-docs/)
+- **Production (Live)**: [https://edulearn-gray.vercel.app/api-docs](https://edulearn-gray.vercel.app/api-docs)
 - **Local Development**: `http://localhost:8000/api-docs`
 
 You will find interactive OpenAPI 3.0 documentation where you can execute and test endpoints directly.

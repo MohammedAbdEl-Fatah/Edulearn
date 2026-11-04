@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as AuthDTO from "./auth.dto";
 import AuthFactory from "./auth.factory";
 import { IToken, IUser } from "../../utils/interface";
@@ -15,6 +15,8 @@ import { TokenRepository } from "../../DB/token/token.repository";
 import { verifyToken } from "../../middleware/auth.middleware";
 import { TokenSecret } from "../../utils/generated";
 import { asyncHandleError } from "../../error/async.handle";
+import { ResetPasswordDto } from "./auth.dto";
+import { AppError } from "../../error/app.error";
 class AuthenticationService {
     constructor(
         private readonly authFactory: typeof AuthFactory,
@@ -318,6 +320,23 @@ class AuthenticationService {
             message: "Password updated successfully"
         });
     });
+    public resetPassword = asyncHandleError(async (
+        req: Request, res: Response, next: NextFunction
+    ) => {
+        //reset password in profile 
+        //current password and newpassword
+        const resetPasswordDto: ResetPasswordDto = req.body;
+        //check user is exist by token
+        const user = req.user;
+        const userExiat = await this.userRepository.getOne({ filter: { _id: user?.id, isVerified: true } });
+        if (!userExiat) throw new AppError("Not found user", 404);
+        const matchean: boolean = await compareValue({ value: resetPasswordDto.currentPassword, hash: userExiat.password });
+        if (!matchean) throw new AppError("inValid Password", 401);
+        //factory
+        const newPassword = await this.authFactory.newPassword(resetPasswordDto.newPassword);
+        await this.userRepository.updateOne({ filter: { _id: userExiat.id }, projection: { $set: { password: newPassword, updatedAt: new Date() } } })
+        return res.status(200).json(this.authResponse.resetPasswordResponse());
+    });
 
 
 
@@ -406,6 +425,7 @@ class AuthenticationService {
         });
         //TODO cronJob delete Token is revoked or expire Token
     });
+
 }
 
 

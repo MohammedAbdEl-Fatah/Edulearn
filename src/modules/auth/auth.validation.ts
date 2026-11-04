@@ -37,5 +37,14 @@ class AuthValidation {
     }).extend({
         newPassword: z.string().min(6, { error: "Password must be at least 6 characters" }),
     });
-}
+    public resetPassword = z.strictObject({
+        currentPassword: z.string().min(6, { error: "Password must be at least 6 characters" }),
+        newPassword: z.string().min(6, { error: "Password must be at least 6 characters" }),
+        confirmPassword: z.string().min(6, { error: "Password must be at least 6 characters" }),
+    }).refine((data) => data.newPassword === data.confirmPassword, {
+        message: "confirmPassword doesn't match",
+        path: ["confirmPassword"],
+    });
+};
+
 export default new AuthValidation();
