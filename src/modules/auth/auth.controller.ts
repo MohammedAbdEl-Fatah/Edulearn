@@ -211,7 +211,7 @@ router.post(
  * @openapi
  * /auth/forget-password:
  *   post:
- *     summary: Reset Password
+ *     summary: Forget Password
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -233,6 +233,65 @@ router.post(
     "/forget-password",
     isValidationBody(authValidation.forgetPasswordValidation),
     authService.forgetPassword
+);
+/**
+ * @openapi
+ * /auth/reset-password:
+ *   put:
+ *     summary: Reset Password (Profile)
+ *     tags: [Authentication]
+ *     parameters:
+ *       - in: header
+ *         name: accesstoken
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: "Access token prefixed with role (e.g. 'student <token>' or 'teacher <token>')"
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: "Refresh token prefixed with role (e.g. 'student <token>' or 'teacher <token>')"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *               - confirmPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 description: Old password for user
+ *               newPassword:
+ *                 type: string
+ *                 description: New password for user
+ *               confirmPassword:
+ *                 type: string
+ *                 description: Match password for user
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *       400:
+ *         description: Bad request / Invalid current password / Passwords do not match
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden / Token expired or revoked
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put(
+    "/reset-password",
+    authMiddleware,
+    isValidationBody(authValidation.resetPassword),
+    authService.resetPassword
 );
 
 export default router;

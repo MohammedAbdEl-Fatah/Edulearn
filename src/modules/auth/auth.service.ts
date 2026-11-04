@@ -260,13 +260,22 @@ class AuthenticationService {
         }
         // generate otp
         const otpFactory = await this.authFactory.generateOtp({ time: 6 });
-        // send otp to email
-        await this.sendMaillerVerify({
-            type: EmailType.FORGOT,
-            email: generatedOtpDTO.email,
-            otp: decryptValue(otpFactory.otp),
-            otpExpires: otpFactory.otpExpires
-        });
+        const plainOtp = decryptValue(otpFactory.otp);
+        // Send OTP email with error handling
+        try {
+            await this.sendMaillerVerify({
+                type: EmailType.FORGOT,
+                email: generatedOtpDTO.email,
+                otp: plainOtp,
+                otpExpires: otpFactory.otpExpires
+            });
+        } catch (error) {
+            console.error("Failed to send forgot-password email:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Failed to send OTP email. Please try again later."
+            });
+        }
         // save otp in db in user collection 
         await this.userRepository.updateOne({
             filter: { email: generatedOtpDTO.email },
@@ -283,6 +292,7 @@ class AuthenticationService {
     public forgetPassword = asyncHandleError(async (
         req: Request, res: Response
     ) => {
+        //before it request generateOtpForForgetPassword
         // email is exist or not and confirm
         const forgetPasswordDTO: AuthDTO.ForgetPasswordDTO = req.body;
         const exist = await this.userRepository.getOne({ filter: { email: forgetPasswordDTO.email, isVerified: true } });
@@ -320,6 +330,7 @@ class AuthenticationService {
             message: "Password updated successfully"
         });
     });
+    // Reset password (authenticated user profile)
     public resetPassword = asyncHandleError(async (
         req: Request, res: Response, next: NextFunction
     ) => {
@@ -328,13 +339,23 @@ class AuthenticationService {
         const resetPasswordDto: ResetPasswordDto = req.body;
         //check user is exist by token
         const user = req.user;
-        const userExiat = await this.userRepository.getOne({ filter: { _id: user?.id, isVerified: true } });
-        if (!userExiat) throw new AppError("Not found user", 404);
-        const matchean: boolean = await compareValue({ value: resetPasswordDto.currentPassword, hash: userExiat.password });
-        if (!matchean) throw new AppError("inValid Password", 401);
+        if (!user) throw new AppError("Not found user", 404);
+        const isPasswordMatch: boolean = await compareValue({ value: resetPasswordDto.currentPassword, hash: user.password });
+        if (!isPasswordMatch) throw new AppError("inValid Password", 401);
+        if (resetPasswordDto.currentPassword === resetPasswordDto.newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "New password cannot be the same as the current password"
+            });
+        }
         //factory
         const newPassword = await this.authFactory.newPassword(resetPasswordDto.newPassword);
-        await this.userRepository.updateOne({ filter: { _id: userExiat.id }, projection: { $set: { password: newPassword, updatedAt: new Date() } } })
+        await this.userRepository.updateOne({ filter: { _id: user.id }, projection: { $set: { password: newPassword, updatedAt: new Date() } } })
+        // Invalidate old tokens for security
+        await this.tokenRepository.updateOne({
+            filter: { userId: user.id },
+            projection: { $set: { isRevoked: true } }
+        });
         return res.status(200).json(this.authResponse.resetPasswordResponse());
     });
 
