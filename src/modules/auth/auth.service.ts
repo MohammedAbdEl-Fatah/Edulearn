@@ -17,6 +17,7 @@ import { TokenSecret } from "../../utils/generated";
 import { asyncHandleError } from "../../error/async.handle";
 import { ResetPasswordDto } from "./auth.dto";
 import { AppError } from "../../error/app.error";
+import forgotPasswordTemplate from "../../utils/email/temp/forgetPassword.email";
 class AuthenticationService {
     constructor(
         private readonly authFactory: typeof AuthFactory,
@@ -43,7 +44,7 @@ class AuthenticationService {
                     email: email,
                     subject: "Forgot Password",
                     text: "Forgot Password",
-                    html: verifyEmailTemplate(email, otp, remendOtpExpire)
+                    html: forgotPasswordTemplate(email, otp, remendOtpExpire)
                 });
                 break;
 
