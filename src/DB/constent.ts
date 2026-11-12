@@ -5,4 +5,5 @@ export enum ConstentModel {
     REVIEW = "Review",
     VIDEO = "Video",
     FILE = "File",
+    ENROLLMENT = "Enrollment",
 }

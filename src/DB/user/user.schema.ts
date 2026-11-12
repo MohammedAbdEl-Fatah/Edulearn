@@ -12,7 +12,8 @@ export const userSchema = new Schema<IUser>({
     phone: { type: String, required: false, trim: true },
     dob: { type: Date, required: false },
     otp: { type: String, required: false, trim: true },
-    otpExpires: { type: Date, required: false }
+    otpExpires: { type: Date, required: false },
+    about: { type: String, required: false, trim: true, default: "" }
 }, {
     timestamps: true,
     versionKey: false,

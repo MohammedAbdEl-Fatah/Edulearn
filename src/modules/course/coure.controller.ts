@@ -3,6 +3,7 @@ import CourseValidation from "./course.validation";
 import { isValidationBody } from "../../middleware/validation.middleware";
 import CourseService from "./course.service";
 import { authMiddleware } from "../../middleware/auth.middleware";
+import enrollmentService from "../enrollment/enrollment.service";
 
 
 export const courseController = Router();
@@ -210,3 +211,38 @@ courseController.get("/get-courses-teacher/:id", CourseService.getCoursesTeacher
  *         description: Internal server error
  */
 courseController.delete("/delete-course/:id", authMiddleware, CourseService.deleteCourse);
+
+/**
+ * @openapi
+ * /course/progress/{id}:
+ *   get:
+ *     summary: Get course progress for student (showing percentage up to 100%)
+ *     tags: [Course]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The course ID
+ *     responses:
+ *       200:
+ *         description: Course progress retrieved successfully
+ *       400:
+ *         description: Invalid course ID
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Only students can view their course progress
+ *       404:
+ *         description: Course or enrollment not found
+ *       500:
+ *         description: Internal server error
+ */
+courseController.get(
+    "/progress/:id",
+    authMiddleware,
+    enrollmentService.getCourseProgress
+);

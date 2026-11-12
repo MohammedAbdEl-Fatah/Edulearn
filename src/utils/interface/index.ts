@@ -13,9 +13,20 @@ export interface IUser {
     isVerified: boolean;
     otp: string;
     otpExpires: Date;
+    about?: string;
     createdAt: Date;
     updatedAt: Date;
     subjectCourse?: string[];
+}
+export interface IEnrollment {
+    readonly id: Types.ObjectId;
+    studentId: Types.ObjectId;
+    courseId: Types.ObjectId;
+    completedLessons: Types.ObjectId[];
+    progress: number;
+    isCompleted: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 export interface IToken {
     readonly id: Types.ObjectId;

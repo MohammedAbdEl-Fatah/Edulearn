@@ -63,5 +63,10 @@ export abstract class DatabaseRepository<T> {
     async deleteMany({ filter, options }: { filter: FilterQuery<T>, options?: MongooseBaseQueryOptions<T> }): Promise<any> {
         return await this.model.deleteMany(filter, options);
     }
+
+    //count
+    async count(filter: FilterQuery<T> = {}): Promise<number> {
+        return await this.model.countDocuments(filter);
+    }
 }
 
