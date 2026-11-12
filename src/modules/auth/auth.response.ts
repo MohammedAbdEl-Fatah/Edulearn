@@ -45,11 +45,13 @@ class AuthResponse {
             message: "Email verified successfully"
         }
     }
-    public loginResponse(token: { accessToken: string; refreshToken: string }) {
+    public loginResponse(token: { accessToken: string; refreshToken: string }, userId: string, role: string) {
         return {
             success: true,
             message: "Login successful",
             data: {
+                userId,
+                role,
                 accessToken: token.accessToken,
                 refreshToken: token.refreshToken
             }

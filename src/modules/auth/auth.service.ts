@@ -243,7 +243,7 @@ class AuthenticationService {
             expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
         } as any);
         // response    
-        return res.status(200).json(this.authResponse.loginResponse(token));
+        return res.status(200).json(this.authResponse.loginResponse(token, exist.id.toString(), exist.role));
     });
 
     //generated otp for forget password
