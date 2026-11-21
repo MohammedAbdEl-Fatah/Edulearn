@@ -6,6 +6,8 @@ import { CourseRepository } from "../../DB/course/course.repository";
 import { EnrollmentRepository } from "../../DB/enrollment/enrollment.repository";
 import { RoleUSER } from "../../utils/enum";
 import { AppError } from "../../error/app.error";
+import { hashValue } from "../../utils/hash";
+import { encryptValue } from "../../utils/encrypt";
 
 class UserService {
     constructor(
@@ -45,12 +47,13 @@ class UserService {
     public editProfile = asyncHandleError(
         async (req: Request, res: Response) => {
             const userId = req.user!.id;
-            const { firstName, lastName, about } = req.body;
+            const { firstName, lastName, about ,phone} = req.body;
 
             const updateData: Record<string, any> = {};
             if (firstName !== undefined) updateData.firstName = firstName;
             if (lastName !== undefined) updateData.lastName = lastName;
             if (about !== undefined) updateData.about = about;
+            if (phone !== undefined) updateData.phone = encryptValue(phone);
 
             await this.userRepository.updateOne({
                 filter: { _id: userId },
