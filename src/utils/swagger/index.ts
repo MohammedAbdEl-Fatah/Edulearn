@@ -61,6 +61,19 @@ const options: swaggerJSDoc.Options = {
                     type: "http",
                     scheme: "bearer",
                     bearerFormat: "JWT",
+                    description: "JWT access token from /auth/login. You can paste the raw token directly, or prefix with 'Bearer ', 'teacher ', or 'student '.",
+                },
+                accessToken: {
+                    type: "apiKey",
+                    in: "header",
+                    name: "accesstoken",
+                    description: "Access token header. Format: 'teacher <token>', 'student <token>', or '<token>'",
+                },
+                authorizationHeader: {
+                    type: "apiKey",
+                    in: "header",
+                    name: "Authorization",
+                    description: "Authorization header (refresh token or access token). Format: 'teacher <token>', 'student <token>', 'Bearer <token>', or '<token>'",
                 },
             },
             schemas: {
@@ -116,6 +129,11 @@ const options: swaggerJSDoc.Options = {
                 },
             },
         },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
     },
     apis: [
         "./src/modules/auth/**/*.ts",

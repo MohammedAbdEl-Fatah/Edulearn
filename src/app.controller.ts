@@ -38,8 +38,8 @@ export const bootstrap = (app: Express, express: any): void => {
     app.use(
         cors({
             origin: true,
-            methods: ["GET", "POST", "PUT", "DELETE"],
-            allowedHeaders: ["Content-Type", "Authorization"],
+            methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+            allowedHeaders: ["Content-Type", "Authorization", "accesstoken", "accessToken"],
         }),
         limiter,
         helmet({
