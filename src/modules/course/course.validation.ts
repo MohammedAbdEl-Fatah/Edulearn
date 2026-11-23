@@ -12,7 +12,6 @@ class CourseValidation {
     )
 
     createCourse = z.strictObject({
-        instructorId: this.objectIdSchema,
         title: z.string().min(1, { error: "Title is required" }),
         description: z.string().min(1, { error: "Description is required" }),
         price: z.number().min(0, { error: "Price must be a positive number" }),

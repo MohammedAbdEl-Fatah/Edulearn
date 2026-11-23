@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
-import UserResponse, { IUserStats } from "./user.response";
-import { asyncHandleError } from "../../error/async.handle";
-import { UserRepository } from "../../DB/user/user.repository";
 import { CourseRepository } from "../../DB/course/course.repository";
 import { EnrollmentRepository } from "../../DB/enrollment/enrollment.repository";
-import { RoleUSER } from "../../utils/enum";
+import { UserRepository } from "../../DB/user/user.repository";
 import { AppError } from "../../error/app.error";
-import { hashValue } from "../../utils/hash";
+import { asyncHandleError } from "../../error/async.handle";
 import { encryptValue } from "../../utils/encrypt";
+import { RoleUSER } from "../../utils/enum";
+import UserResponse, { IUserStats } from "./user.response";
 
 class UserService {
     constructor(
