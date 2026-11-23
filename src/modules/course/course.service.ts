@@ -9,6 +9,7 @@ import { AppError } from "../../error/app.error";
 import courseValidation from "./course.validation";
 import { CloudinaryService } from "../../utils/cloud/cloudinary";
 import { UploadApiResponse } from "cloudinary";
+import { Types } from "mongoose";
 
 class CourseService {
     constructor(
@@ -44,7 +45,7 @@ class CourseService {
         }
 
         //upload thumbnail to cloudinary
-        const folder = `edulearn/${req.user!.id}/course/thumbnail/`;
+        const folder = this.getUrlThumbnail(req.user!.id);
         const uploadFile: UploadApiResponse = await this.cloudinaryService.uploadFile(fileUser, folder);
 
         try {
@@ -87,7 +88,7 @@ class CourseService {
                 if (!fileUser.mimetype.startsWith("image/")) {
                     throw new AppError("Course thumbnail must be an image", 400);
                 }
-                const folder = `edulearn/${req.user!.id}/course/thumbnail/`;
+                const folder = this.getUrlThumbnail(req.user!.id);
                 if (courseDB.thumbnail?.publicId) {
                     await this.cloudinaryService.deleteFile(courseDB.thumbnail.publicId, "image");
                 }
@@ -123,7 +124,7 @@ class CourseService {
             const responseDeleteCourse = this.responseCourse.deleteCourseResponse(courseDelete);
             return res.status(200).json(responseDeleteCourse);
         });
-/////////////////////////////all user///////////////////////////
+    /////////////////////////////all user///////////////////////////
     // this for all users 
     //get course => mean select id from courses any one can give course id
     public getCourse = asyncHandleError(
@@ -186,6 +187,9 @@ class CourseService {
             throw new AppError("forbidden you dont have permission to edit this course", 403);
         }
         return { courseDB, courseID };
+    }
+    private getUrlThumbnail(user: Types.ObjectId): string {
+        return `edulearn/${user}/course/thumbnail/`
     }
 }
 
