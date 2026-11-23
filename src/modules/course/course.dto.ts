@@ -13,5 +13,9 @@ export interface editCourseDto {
     description?: string;
     //only discount can be change 
     discount?: number;
+    thumbnail?: {
+        url: string;
+        publicId: string;
+    };
 }
 

@@ -81,7 +81,7 @@ export const bootstrap = (app: Express, express: any): void => {
     //modules
     app.use("/api/v1/auth", authController);
     app.use("/api/v1/user", userController);
-    app.use("/api/v1/course", courseController);
+    app.use("/api/v2/course", courseController);
     app.use("/api/v1/session", sessionController);
     app.use("/api/v1/video", videoController);
     app.use("/api/v1/file", fileController);

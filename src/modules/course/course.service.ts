@@ -7,12 +7,15 @@ import { RoleUSER } from "../../utils/enum";
 import { asyncHandleError } from "../../error/async.handle";
 import { AppError } from "../../error/app.error";
 import courseValidation from "./course.validation";
+import { CloudinaryService } from "../../utils/cloud/cloudinary";
+import { UploadApiResponse } from "cloudinary";
 
 class CourseService {
     constructor(
         private readonly courseRepository: CourseRepository,
         private readonly courseFactory: CourseFactory,
-        private readonly responseCourse: CourseResponse
+        private readonly responseCourse: CourseResponse,
+        private readonly cloudinaryService: CloudinaryService = CloudinaryService.getInstance()
     ) { }
 
     ///////////teacher user ////////////////////////////////////
@@ -20,6 +23,16 @@ class CourseService {
     public createCourse = asyncHandleError(async (req: Request, res: Response) => {
         //check role user is teacher
         this.checkTeacher(req.user);
+
+        //validate thumbnail file
+        const fileUser = req.file;
+        if (!fileUser) {
+            throw new AppError("Course thumbnail is required", 400);
+        }
+        if (!fileUser.mimetype.startsWith("image/")) {
+            throw new AppError("Course thumbnail must be an image", 400);
+        }
+
         //get data from req
         const createCourseDTO: CreateCourseDto = req.body;
         //search course by title and instructorId
@@ -29,13 +42,26 @@ class CourseService {
         if (course) {
             throw new AppError("Course already exists", 400);
         }
-        //factory course
-        const courseData = this.courseFactory.createCourse(createCourseDTO, req.user!.id);
-        //create course to db
-        const courseDB = await this.courseRepository.create(courseData);
-        //return response
-        const responseCreateCourse = this.responseCourse.createCourseResponse(courseDB);
-        return res.status(201).json(responseCreateCourse);
+
+        //upload thumbnail to cloudinary
+        const folder = `edulearn/${req.user!.id}/course/thumbnail/`;
+        const uploadFile: UploadApiResponse = await this.cloudinaryService.uploadFile(fileUser, folder);
+
+        try {
+            //factory course
+            const courseData = this.courseFactory.createCourse(createCourseDTO, req.user!.id, {
+                url: uploadFile.secure_url || uploadFile.url,
+                publicId: uploadFile.public_id,
+            });
+            //create course to db
+            const courseDB = await this.courseRepository.create(courseData);
+            //return response
+            const responseCreateCourse = this.responseCourse.createCourseResponse(courseDB);
+            return res.status(201).json(responseCreateCourse);
+        } catch (error) {
+            await this.cloudinaryService.deleteFile(uploadFile.public_id, "image");
+            throw error;
+        }
     });
     //edit course
     public editCourse = asyncHandleError(
@@ -50,8 +76,30 @@ class CourseService {
             }
             //get data 
             const editCourseDto: editCourseDto = req.body;
+            const fileUser = req.file;
+
+            if (!fileUser && !editCourseDto.title && !editCourseDto.description && editCourseDto.discount === undefined) {
+                throw new AppError("At least one field (title, description, discount, or thumbnail) is required to update", 400);
+            }
+
+            let thumbnailData: { url: string; publicId: string } | undefined;
+            if (fileUser) {
+                if (!fileUser.mimetype.startsWith("image/")) {
+                    throw new AppError("Course thumbnail must be an image", 400);
+                }
+                const folder = `edulearn/${req.user!.id}/course/thumbnail/`;
+                if (courseDB.thumbnail?.publicId) {
+                    await this.cloudinaryService.deleteFile(courseDB.thumbnail.publicId, "image");
+                }
+                const uploadFile: UploadApiResponse = await this.cloudinaryService.uploadFile(fileUser, folder);
+                thumbnailData = {
+                    url: uploadFile.secure_url || uploadFile.url,
+                    publicId: uploadFile.public_id,
+                };
+            }
+
             //factory edit data
-            const editCourseData = this.courseFactory.editCourse(editCourseDto, courseDB);
+            const editCourseData = this.courseFactory.editCourse(editCourseDto, courseDB, thumbnailData);
             //save to db
             const courseUpdate = await this.courseRepository.updateOne({ filter: { _id: courseID.data.id }, projection: { $set: editCourseData } });
             //reposne
@@ -65,7 +113,10 @@ class CourseService {
     public deleteCourse = asyncHandleError(
         async (req: Request, res: Response) => {
             //check id from pramas and user
-            const { courseID } = await this.CheckRoleUserAndIdOfCourse(req);
+            const { courseID, courseDB } = await this.CheckRoleUserAndIdOfCourse(req);
+            if (courseDB.thumbnail?.publicId) {
+                await this.cloudinaryService.deleteFile(courseDB.thumbnail.publicId, "image");
+            }
             //dete course 
             const courseDelete = await this.courseRepository.deleteOne({ filter: { _id: courseID.data.id } });
             //response
@@ -138,4 +189,4 @@ class CourseService {
     }
 }
 
-export default new CourseService(new CourseRepository(), new CourseFactory(), new CourseResponse());
+export default new CourseService(new CourseRepository(), new CourseFactory(), new CourseResponse(), CloudinaryService.getInstance());

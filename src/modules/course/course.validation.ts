@@ -12,10 +12,10 @@ class CourseValidation {
     )
 
     createCourse = z.strictObject({
-        title: z.string().min(1, { error: "Title is required" }),
-        description: z.string().min(1, { error: "Description is required" }),
-        price: z.number().min(0, { error: "Price must be a positive number" }),
-        discount: z.number().min(0, { error: "Discount must be a positive number" }),
+        title: z.string().min(1, { message: "Title is required" }),
+        description: z.string().min(1, { message: "Description is required" }),
+        price: z.coerce.number().min(0, { message: "Price must be a positive number" }),
+        discount: z.coerce.number().min(0, { message: "Discount must be a positive number" }).default(0),
         category: z.enum(CategoryType, { error: "Invalid category. Must be one of beginner, intermediate, advanced." }),
     });
 
@@ -24,13 +24,10 @@ class CourseValidation {
     })
 
     editCourse = z.strictObject({
-        title: z.string().min(1, { error: "Title must be a string and not empty" }).optional(),
-        description: z.string().min(1, { error: "Description must be a string and not empty" }).optional(),
-        discount: z.number().min(0, { error: "Discount must be a positive number" }).optional(),
-    }).refine((data) => data.title || data.description || data.discount, {
-        error: "At least one field is required",
-
-    })
+        title: z.string().min(1, { message: "Title must be a string and not empty" }).optional(),
+        description: z.string().min(1, { message: "Description must be a string and not empty" }).optional(),
+        discount: z.coerce.number().min(0, { message: "Discount must be a positive number" }).optional(),
+    });
 }
 
 export default new CourseValidation();

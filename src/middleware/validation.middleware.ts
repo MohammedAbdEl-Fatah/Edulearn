@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import { ZodError, ZodObject } from "zod";
 
 export const isValidationBody =
-    (schema: ZodObject) =>
+    (schema: any) =>
         (req: Request, res: Response, next: NextFunction) => {
 
             try {
-                schema.parse(req.body);
+                const parsed = schema.parse(req.body);
+                req.body = parsed;
                 return next();
             } catch (error) {
                 if (error instanceof ZodError) {
@@ -14,7 +15,7 @@ export const isValidationBody =
                         message: "Validation failed",
                         errors: {
                             message: error.issues.map((issue) => issue.message),
-                            path: error.issues.map((issue) => issue.path.at(0)),
+                            path: error.issues.map((issue) => issue.path.at(0)),    
                         },
                     });
                 }

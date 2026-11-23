@@ -36,6 +36,7 @@ class CourseResponse {
                 discount: data.discount,
                 category: data.category,
                 instructorId: data.instructorId,
+                thumbnail: data.thumbnail,
                 reviews: data.reviews,
                 sessions: data.sessions,
             },

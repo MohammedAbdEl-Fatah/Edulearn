@@ -6,6 +6,10 @@ export const courseSchema = new Schema<ICourse>({
     instructorId: { type: Schema.Types.ObjectId, required: true, ref: ConstentModel.USER },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
+    thumbnail: {
+        url: { type: String, required: true },
+        publicId: { type: String, required: true },
+    },
     price: { type: Number, required: true },
     discount: { type: Number, required: true, default: 0 },
     category: { type: String, required: true, trim: true },

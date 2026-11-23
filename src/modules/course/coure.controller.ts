@@ -4,6 +4,7 @@ import { isValidationBody } from "../../middleware/validation.middleware";
 import CourseService from "./course.service";
 import { authMiddleware } from "../../middleware/auth.middleware";
 import enrollmentService from "../enrollment/enrollment.service";
+import MulterService from "../../middleware/multer.middleware";
 
 
 export const courseController = Router();
@@ -19,19 +20,21 @@ export const courseController = Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
+ *               - thumbnail
  *               - title
  *               - description
  *               - price
  *               - discount
  *               - category
  *             properties:
- *               instructorId:
+ *               thumbnail:
  *                 type: string
- *                 example: "6a490103a2602737bbe702d3"
+ *                 format: binary
+ *                 description: Course thumbnail / logo image
  *               title:
  *                 type: string
  *                 example: "Node.js & TypeScript Masterclass"
@@ -52,7 +55,7 @@ export const courseController = Router();
  *       201:
  *         description: Course created successfully
  *       400:
- *         description: Bad request / Course already exists
+ *         description: Bad request / Course already exists / Missing thumbnail
  *       401:
  *         description: Unauthorized
  *       403:
@@ -62,8 +65,9 @@ export const courseController = Router();
  */
 courseController.post(
     "/create-course",
-    isValidationBody(CourseValidation.createCourse),
     authMiddleware,
+    MulterService.singleFile("thumbnail"),
+    isValidationBody(CourseValidation.createCourse),
     CourseService.createCourse
 );
 
@@ -83,12 +87,16 @@ courseController.post(
  *           type: string
  *         description: The course ID
  *     requestBody:
- *       required: true
+ *       required: false
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
+ *               thumbnail:
+ *                 type: string
+ *                 format: binary
+ *                 description: New course thumbnail / logo image
  *               title:
  *                 type: string
  *                 example: "Advanced Node.js & TypeScript"
@@ -115,6 +123,7 @@ courseController.post(
 courseController.patch(
     "/edit-course/:id",
     authMiddleware,
+    MulterService.singleFile("thumbnail"),
     isValidationBody(CourseValidation.editCourse),
     CourseService.editCourse
 );

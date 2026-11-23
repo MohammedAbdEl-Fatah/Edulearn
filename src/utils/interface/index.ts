@@ -36,11 +36,17 @@ export interface IToken {
     expires: Date;
     isRevoked: boolean;
 }
+export interface ICourseThumbnail {
+    url: string;
+    publicId: string;
+}
+
 export interface ICourse {
     readonly id: Types.ObjectId;
     instructorId: Types.ObjectId;
     title: string;
     description: string;
+    thumbnail: ICourseThumbnail;
     //price and discount
     price: number;
     discount: number;
