@@ -1,17 +1,32 @@
 import swaggerJSDoc from "swagger-jsdoc";
+import { env } from "../../config/env.local";
+
+const port = env.PORT || "8000";
 
 const options: swaggerJSDoc.Options = {
     definition: {
         openapi: "3.0.0",
         info: {
             title: "Edulearn API",
-            version: "1.0.0",
-            description: "Edulearn E-Learning Platform API documentation",
+            version: "2.0.0",
+            description: "Edulearn E-Learning Platform API documentation (Course module updated to v2)",
         },
         servers: [
             {
+                url: `http://localhost:${port}/api/v1`,
+                description: "Local Server (v1 - Auth, User, Session, Video, File, Enrollment)",
+            },
+            {
+                url: `http://localhost:${port}/api/v2`,
+                description: "Local Server (v2 - Course)",
+            },
+            {
                 url: `https://edulearn-gray.vercel.app/api/v1`,
-                description: "Development server",
+                description: "Production Server (v1 - Auth, User, Session, Video, File, Enrollment)",
+            },
+            {
+                url: `https://edulearn-gray.vercel.app/api/v2`,
+                description: "Production Server (v2 - Course)",
             },
         ],
         tags: [
@@ -25,7 +40,7 @@ const options: swaggerJSDoc.Options = {
             },
             {
                 name: "Course",
-                description: "Course management operations",
+                description: "Course management operations (API v2)",
             },
             {
                 name: "Session",

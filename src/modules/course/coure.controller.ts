@@ -13,6 +13,15 @@ export const courseController = Router();
  * @openapi
  * /course/create-course:
  *   post:
+ *     servers:
+ *       - url: /api/v2
+ *         description: Current server (v2)
+ *       - url: http://localhost:8001/api/v2
+ *         description: Local server (v2 - port 8001)
+ *       - url: http://localhost:8000/api/v2
+ *         description: Local server (v2 - port 8000)
+ *       - url: https://edulearn-gray.vercel.app/api/v2
+ *         description: Production server (v2)
  *     summary: Create a new course
  *     tags: [Course]
  *     security:
@@ -75,6 +84,13 @@ courseController.post(
  * @openapi
  * /course/edit-course/{id}:
  *   patch:
+ *     servers:
+ *       - url: http://localhost:8000/api/v2
+ *         description: Local server (v2 - port 8000)
+ *       - url: http://localhost:8001/api/v2
+ *         description: Local server (v2 - port 8001)
+ *       - url: https://edulearn-gray.vercel.app/api/v2
+ *         description: Production server (v2)
  *     summary: Edit an existing course
  *     tags: [Course]
  *     security:
@@ -132,6 +148,13 @@ courseController.patch(
  * @openapi
  * /course/get-course/{id}:
  *   get:
+ *     servers:
+ *       - url: http://localhost:8000/api/v2
+ *         description: Local server (v2 - port 8000)
+ *       - url: http://localhost:8001/api/v2
+ *         description: Local server (v2 - port 8001)
+ *       - url: https://edulearn-gray.vercel.app/api/v2
+ *         description: Production server (v2)
  *     summary: Get course by ID
  *     tags: [Course]
  *     parameters:
@@ -157,6 +180,13 @@ courseController.get("/get-course/:id", CourseService.getCourse);
  * @openapi
  * /course/get-all-course:
  *   get:
+ *     servers:
+ *       - url: http://localhost:8000/api/v2
+ *         description: Local server (v2 - port 8000)
+ *       - url: http://localhost:8001/api/v2
+ *         description: Local server (v2 - port 8001)
+ *       - url: https://edulearn-gray.vercel.app/api/v2
+ *         description: Production server (v2)
  *     summary: Get all courses
  *     tags: [Course]
  *     responses:
@@ -171,6 +201,13 @@ courseController.get("/get-all-course", CourseService.getAllCourses);
  * @openapi
  * /course/get-courses-teacher/{id}:
  *   get:
+ *     servers:
+ *       - url: http://localhost:8000/api/v2
+ *         description: Local server (v2 - port 8000)
+ *       - url: http://localhost:8001/api/v2
+ *         description: Local server (v2 - port 8001)
+ *       - url: https://edulearn-gray.vercel.app/api/v2
+ *         description: Production server (v2)
  *     summary: Get all courses by teacher ID
  *     tags: [Course]
  *     parameters:
@@ -194,6 +231,13 @@ courseController.get("/get-courses-teacher/:id", CourseService.getCoursesTeacher
  * @openapi
  * /course/delete-course/{id}:
  *   delete:
+ *     servers:
+ *       - url: http://localhost:8000/api/v2
+ *         description: Local server (v2 - port 8000)
+ *       - url: http://localhost:8001/api/v2
+ *         description: Local server (v2 - port 8001)
+ *       - url: https://edulearn-gray.vercel.app/api/v2
+ *         description: Production server (v2)
  *     summary: Delete a course
  *     tags: [Course]
  *     security:
@@ -225,6 +269,13 @@ courseController.delete("/delete-course/:id", authMiddleware, CourseService.dele
  * @openapi
  * /course/progress/{id}:
  *   get:
+ *     servers:
+ *       - url: http://localhost:8000/api/v2
+ *         description: Local server (v2 - port 8000)
+ *       - url: http://localhost:8001/api/v2
+ *         description: Local server (v2 - port 8001)
+ *       - url: https://edulearn-gray.vercel.app/api/v2
+ *         description: Production server (v2)
  *     summary: Get course progress for student (showing percentage up to 100%)
  *     tags: [Course]
  *     security:
