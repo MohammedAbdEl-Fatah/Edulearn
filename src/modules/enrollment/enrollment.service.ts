@@ -242,6 +242,7 @@ class EnrollmentService {
                         category: course ? course.category : "",
                         price: course ? course.price : 0,
                         discount: course ? course.discount : 0,
+                        totalPrice: course ? (course.totalPrice ?? course.price) : 0,
                         totalLessons,
                         completedLessonsCount: completedCount,
                         progressPercentage: `${progress}%`,

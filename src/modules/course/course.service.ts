@@ -79,8 +79,19 @@ class CourseService {
             const editCourseDto: editCourseDto = req.body;
             const fileUser = req.file;
 
-            if (!fileUser && !editCourseDto.title && !editCourseDto.description && editCourseDto.discount === undefined) {
-                throw new AppError("At least one field (title, description, discount, or thumbnail) is required to update", 400);
+            const hasUpdateField =
+                Boolean(fileUser) ||
+                Boolean(editCourseDto.title) ||
+                Boolean(editCourseDto.description) ||
+                editCourseDto.price !== undefined ||
+                editCourseDto.discount !== undefined ||
+                editCourseDto.discountStartDate !== undefined ||
+                editCourseDto.discountEndDate !== undefined ||
+                editCourseDto.discountFrom !== undefined ||
+                editCourseDto.discountTo !== undefined;
+
+            if (!hasUpdateField) {
+                throw new AppError("At least one field (title, description, price, discount, discount dates, or thumbnail) is required to update", 400);
             }
 
             let thumbnailData: { url: string; publicId: string } | undefined;

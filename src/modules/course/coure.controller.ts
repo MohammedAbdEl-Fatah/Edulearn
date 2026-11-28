@@ -55,7 +55,18 @@ export const courseController = Router();
  *                 example: 99.99
  *               discount:
  *                 type: number
+ *                 description: Discount percentage (0-100)
  *                 example: 10
+ *               discountStartDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Start time for discount validity (e.g. 2026-11-28T00:00:00.000Z)
+ *                 example: "2026-11-28T00:00:00.000Z"
+ *               discountEndDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: End time for discount validity (e.g. 2026-12-05T23:59:59.000Z)
+ *                 example: "2026-12-05T23:59:59.000Z"
  *               category:
  *                 type: string
  *                 enum: [beginner, intermediate, advanced]
@@ -119,9 +130,21 @@ courseController.post(
  *               description:
  *                 type: string
  *                 example: "Updated course description."
+ *               price:
+ *                 type: number
+ *                 example: 89.99
  *               discount:
  *                 type: number
+ *                 description: Discount percentage (0-100)
  *                 example: 15
+ *               discountStartDate:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2026-11-28T00:00:00.000Z"
+ *               discountEndDate:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2026-12-05T23:59:59.000Z"
  *     responses:
  *       200:
  *         description: Course updated successfully

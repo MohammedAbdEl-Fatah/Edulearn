@@ -50,6 +50,9 @@ export interface ICourse {
     //price and discount
     price: number;
     discount: number;
+    totalPrice: number;
+    discountStartDate?: Date | undefined;
+    discountEndDate?: Date | undefined;
     sessions: ISession[];
     // duration: number;
     category: string;
